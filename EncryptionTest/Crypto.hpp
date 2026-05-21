@@ -17,17 +17,22 @@ constexpr uint16_t _CHUNK_ = 1024;
 class DirectoryEncryptor {
 public:
 	DirectoryEncryptor();
-	DirectoryEncryptor(const std::string& path);
+	DirectoryEncryptor(const std::string& key, const std::string& path);
 	DirectoryEncryptor(const DirectoryEncryptor& other) = delete;
 	DirectoryEncryptor& operator=(const DirectoryEncryptor& other) = delete;
 
-	void setPath(const std::string& dirPath);
 	int EncryptDirectory();
 	int DecryptDirectory();
 
 private:
+	void initializeBotan();
 	int verifyPath();
 
+	int encryptFile(const std::string& fPath);
+
 private:
+	Botan::secure_vector<uint8_t> cryptoKey{};
+	std::unique_ptr<Botan::Cipher_Mode> enc{};
+	std::unique_ptr<Botan::Cipher_Mode> dec{};
 	std::string path{};
 };
