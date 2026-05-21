@@ -43,7 +43,7 @@ int DirectoryEncryptor::DecryptDirectory() {
 }
 
 int DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
-	std::fstream file(fPath);
+	std::fstream file(fPath, std::ios::in | std::ios::binary);
 
 	if (!file) {
 		std::cerr << "Invalid Path: " << fPath << '\n';
@@ -58,12 +58,14 @@ int DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 	oFile.open(cpy, std::ios::binary);
 
 	Botan::AutoSeeded_RNG rng;
-	const auto iv = Botan::hex_decode_locked("434B5966EC35D5C0F7CD4ABD63FD70B2");
+	const auto iv = rng.random_vec<std::vector<uint8_t>>(enc->default_nonce_length());
 	std::cout << "IV: " << Botan::hex_encode(iv) << '\n';
 
 	std::vector<char> buffer(_CHUNK_);
 
 	enc->start(iv);
+	oFile.write(reinterpret_cast<const char*>(iv.data()), iv.size());
+
 	while (!file.eof()) {
 		file.read(buffer.data(), _CHUNK_);
 		std::streamsize size = file.gcount();
