@@ -12,7 +12,7 @@
 #include<format>
 #include<filesystem>
 
-constexpr uint16_t _CHUNK_ = 1024;
+constexpr uint16_t _CHUNK_ = 4096;
 
 class DirectoryEncryptor {
 public:
