@@ -36,9 +36,11 @@ int main() {
 	std::cout << pt.data() << '\n';
 
 
-	const std::string path = "D:\\Crypto\\SampleFiles\\sampleDoc.txt";
+	const std::string path = "D:\\Crypto\\SampleFiles";
 
-	encryptFile(path);
+	DirectoryEncryptor fcrypt(path);
+
+	fcrypt.EncryptDirectory();
 
 
 	return 0;

@@ -10,15 +10,24 @@
 #include<fstream>
 #include<string>
 #include<format>
+#include<filesystem>
 
 constexpr uint16_t _CHUNK_ = 1024;
 
 class DirectoryEncryptor {
 public:
 	DirectoryEncryptor();
+	DirectoryEncryptor(const std::string& path);
 	DirectoryEncryptor(const DirectoryEncryptor& other) = delete;
 	DirectoryEncryptor& operator=(const DirectoryEncryptor& other) = delete;
 
-private:
+	void setPath(const std::string& dirPath);
+	int EncryptDirectory();
+	int DecryptDirectory();
 
+private:
+	int verifyPath();
+
+private:
+	std::string path{};
 };
