@@ -28,7 +28,7 @@ private:
 	void initializeBotan();
 	int verifyPath();
 
-	int encryptFile(const std::string& fPath);
+	int encryptFile(const std::filesystem::path& fPath);
 
 private:
 	Botan::secure_vector<uint8_t> cryptoKey{};

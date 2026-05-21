@@ -37,8 +37,9 @@ int main() {
 
 
 	const std::string path = "D:\\Crypto\\SampleFiles";
+	const std::string cryptoKey = "2B7E151628AED2A6ABF7158809CF4F3C";
 
-	DirectoryEncryptor fcrypt(path);
+	DirectoryEncryptor fcrypt(cryptoKey, path);
 
 	fcrypt.EncryptDirectory();
 
