@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="EncryptionTest/EncryptionTest.vcxproj" Id="7826126d-1f09-47e5-8483-37832fe5a90e" />
+</Solution>
