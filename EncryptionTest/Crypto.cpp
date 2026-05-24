@@ -2,38 +2,28 @@
 
 DirectoryEncryptor::DirectoryEncryptor() {};
 
-DirectoryEncryptor::DirectoryEncryptor(const std::string& key, const std::string& path) : path { path } {
+DirectoryEncryptor::DirectoryEncryptor(const std::string& key, const std::string& cipher) {
+	this->cipher = cipher;
 	cryptoKey = Botan::hex_decode_locked(key);
 	initializeBotan();
 };
 
-int DirectoryEncryptor::verifyPath() {
-	if (path.length()) {
-		namespace fs = std::filesystem;
-
-		fs::path p(path);
-
-		if (!fs::exists(p)) {
-			return -2;
-		}
-	}
-	return -1;
-}
-
 void DirectoryEncryptor::initializeBotan() {
-	enc = Botan::Cipher_Mode::create_or_throw("AES-128/CBC/PKCS7", Botan::Cipher_Dir::Encryption);
+	enc = Botan::Cipher_Mode::create_or_throw(cipher, Botan::Cipher_Dir::Encryption);
 	enc->set_key(cryptoKey);
-	dec = Botan::Cipher_Mode::create_or_throw("AES-128/CBC/PKCS7", Botan::Cipher_Dir::Decryption);
+	dec = Botan::Cipher_Mode::create_or_throw(cipher, Botan::Cipher_Dir::Decryption);
 	dec->set_key(cryptoKey);
 }
 
-int DirectoryEncryptor::EncryptDirectory() {
+int DirectoryEncryptor::EncryptDirectory(const std::filesystem::path& path) {
 	namespace fs = std::filesystem;
 
 	for (const auto& entry : fs::directory_iterator(path)) {
 		if (entry.is_regular_file()) {
-			std::cout << std::format("File read: {}\n", entry.path().filename().string());
 			encryptFile(entry.path());
+		}
+		else if (entry.is_directory()) {
+			this->EncryptDirectory(entry.path());
 		}
 	}
 }
