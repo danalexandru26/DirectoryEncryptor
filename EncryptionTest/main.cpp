@@ -15,6 +15,7 @@ const std::string blockCipher{ "AES-128/CBC/PKCS7" };
 int main() {
 	DirectoryEncryptor fcrypt(cryptoKey, blockCipher);
 
+	fcrypt.excludeExtension(".tmp");
 	fcrypt.EncryptDirectory(std::filesystem::path(path));
 
 	return 0;

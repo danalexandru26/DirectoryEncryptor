@@ -32,13 +32,31 @@ int DirectoryEncryptor::DecryptDirectory() {
 
 }
 
-int DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
-	std::fstream file(fPath, std::ios::in | std::ios::binary);
+void DirectoryEncryptor::excludeExtension(const std::string& extension) {
+	std::filesystem::path ext(extension);
+	exclusions.insert(ext);
+}
 
+void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extensions) {
+	for (auto& e : extensions) {
+		std::filesystem::path ext(e);
+		exclusions.insert(ext);
+	}
+}
+
+bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
+	if (!verifyExclusion(fPath)) {
+		std::cerr << "File extension is in the exclusion list. Encryption cannot be performed.\n";
+		return false;
+	}
+
+	std::fstream file(fPath, std::ios::in | std::ios::binary);
 	if (!file) {
 		std::cerr << "Invalid Path: " << fPath << '\n';
-		return -1;
+		return false;
 	}
+
+	std::cout << "Currently Encrypting: " << fPath << '\n';
 
 	std::filesystem::path cpy{ fPath };
 	std::filesystem::path ext(".tmp");
@@ -49,7 +67,6 @@ int DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 
 	Botan::AutoSeeded_RNG rng;
 	const auto iv = rng.random_vec<std::vector<uint8_t>>(enc->default_nonce_length());
-	std::cout << "IV: " << Botan::hex_encode(iv) << '\n';
 
 	std::vector<char> buffer(_CHUNK_);
 
@@ -72,4 +89,15 @@ int DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 
 	file.close();
 	oFile.close();
+
+	return true;
+}
+
+bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath) {
+	for (auto& e : exclusions) {
+		if (fPath.extension() == e) {
+			return false;
+		}
+	}
+	return true;
 }
