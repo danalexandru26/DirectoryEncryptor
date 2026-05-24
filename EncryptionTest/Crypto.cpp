@@ -28,8 +28,15 @@ int DirectoryEncryptor::EncryptDirectory(const std::filesystem::path& path) {
 	}
 }
 
-int DirectoryEncryptor::DecryptDirectory() {
-
+int DirectoryEncryptor::DecryptDirectory(const std::filesystem::path& path) {
+	for (const auto& entry : std::filesystem::directory_iterator(path)) {
+		if (entry.is_regular_file()) {
+			this->decryptFile(entry.path());
+		}
+		else {
+			this->DecryptDirectory(entry.path());
+		}
+	}
 }
 
 void DirectoryEncryptor::excludeExtension(const std::string& extension) {
@@ -44,9 +51,60 @@ void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extens
 	}
 }
 
+bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath) {
+	if (verifyExclusion(fPath)) {
+		std::cerr << "File extension is in the exclusion list. Path: " << fPath << '\n';
+		return false;
+	}
+
+	std::fstream file(fPath, std::ios::binary | std::ios::in);
+	if (!file) {
+		std::cerr << "Invalid Path: " << fPath << '\n';
+		return false;
+	}
+	
+	std::filesystem::path dummyPath{ fPath };
+	dummyPath.replace_extension(_TMPEXT_);
+
+	std::ofstream dummyFile(dummyPath, std::ios::out | std::ios::binary);
+	if (!file) {
+		std::cerr << "Temporary file cannot be created. Decryption failed for: " << fPath << '\n';
+		return false;
+	}
+	std::cerr << "Currently Decrypting: " << fPath << '\n';
+
+	std::vector<char> buffer(_CHUNK_);
+	std::vector<uint8_t> iv(_IVLEN_);
+
+	file.read(reinterpret_cast<char*>(iv.data()), iv.size());
+	dec->start(iv);
+
+	while (!file.eof()) {
+		file.read(buffer.data(), _CHUNK_);
+		std::streamsize size = file.gcount();
+
+		Botan::secure_vector<uint8_t> pt(buffer.begin(), buffer.begin() + size);
+
+		if (file.eof()) {
+			dec->finish(pt);
+		}
+		else dec->update(pt);
+
+		dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+	}
+
+	file.close();
+	dummyFile.close();
+
+	std::filesystem::remove(fPath);
+	std::filesystem::rename(dummyPath, fPath);
+
+	return true;
+}
+
 bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
-	if (!verifyExclusion(fPath)) {
-		std::cerr << "File extension is in the exclusion list. Encryption cannot be performed.\n";
+	if (verifyExclusion(fPath)) {
+		std::cerr << "File extension is in the exclusion list. Path: " << fPath << '\n';
 		return false;
 	}
 
@@ -56,22 +114,22 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 		return false;
 	}
 
-	std::cout << "Currently Encrypting: " << fPath << '\n';
+	std::filesystem::path dummyPath{ fPath };
+	dummyPath.replace_extension(_TMPEXT_);
 
-	std::filesystem::path cpy{ fPath };
-	std::filesystem::path ext(".tmp");
-	cpy.replace_extension(ext);
-
-	std::ofstream oFile;
-	oFile.open(cpy, std::ios::binary);
+	std::ofstream dummyFile(dummyPath, std::ios::out | std::ios::binary);
+	if (!dummyFile) {
+		std::cerr << "Temporary file cannot be created. Encryption failed for: " << fPath << '\n';
+		return false;
+	}
+	std::cerr << "Currently Encrypting: " << fPath << '\n';
 
 	Botan::AutoSeeded_RNG rng;
 	const auto iv = rng.random_vec<std::vector<uint8_t>>(enc->default_nonce_length());
-
 	std::vector<char> buffer(_CHUNK_);
 
 	enc->start(iv);
-	oFile.write(reinterpret_cast<const char*>(iv.data()), iv.size());
+	dummyFile.write(reinterpret_cast<const char*>(iv.data()), iv.size());
 
 	while (!file.eof()) {
 		file.read(buffer.data(), _CHUNK_);
@@ -84,11 +142,13 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 		}
 		else enc->update(pt);
 
-		oFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+		dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
 	}
-
 	file.close();
-	oFile.close();
+	dummyFile.close();
+
+	std::filesystem::remove(fPath);
+	std::filesystem::rename(dummyPath, fPath);
 
 	return true;
 }
@@ -96,8 +156,8 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath) {
 	for (auto& e : exclusions) {
 		if (fPath.extension() == e) {
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }

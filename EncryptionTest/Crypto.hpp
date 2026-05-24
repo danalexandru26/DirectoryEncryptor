@@ -14,6 +14,8 @@
 #include<filesystem>
 
 constexpr uint16_t _CHUNK_ = 4096;
+constexpr uint16_t _IVLEN_ = 16;
+const std::string _TMPEXT_ = ".tmp";
 
 class DirectoryEncryptor {
 public:
@@ -23,7 +25,7 @@ public:
 	DirectoryEncryptor& operator=(const DirectoryEncryptor& other) = delete;
 
 	int EncryptDirectory(const std::filesystem::path& path);
-	int DecryptDirectory();
+	int DecryptDirectory(const std::filesystem::path& path);
 
 	void excludeExtension(const std::string& extension);
 	void excludeExtension(const std::vector<std::string>& extensions);
@@ -31,6 +33,7 @@ public:
 private:
 	void initializeBotan();
 	bool encryptFile(const std::filesystem::path& fPath);
+	bool decryptFile(const std::filesystem::path& fPath);
 	bool verifyExclusion(const std::filesystem::path& fPath);
 
 private:
