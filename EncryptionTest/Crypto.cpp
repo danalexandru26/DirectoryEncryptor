@@ -5,20 +5,13 @@ DirectoryEncryptor::DirectoryEncryptor() {};
 DirectoryEncryptor::DirectoryEncryptor(const std::string& key, const std::string& cipher) {
 	this->cipher = cipher;
 	cryptoKey = Botan::hex_decode_locked(key);
-	initializeBotan();
 };
 
-void DirectoryEncryptor::initializeBotan() {
+int DirectoryEncryptor::EncryptDirectory(const std::filesystem::path& path) {
 	enc = Botan::Cipher_Mode::create_or_throw(cipher, Botan::Cipher_Dir::Encryption);
 	enc->set_key(cryptoKey);
-	dec = Botan::Cipher_Mode::create_or_throw(cipher, Botan::Cipher_Dir::Decryption);
-	dec->set_key(cryptoKey);
-}
 
-int DirectoryEncryptor::EncryptDirectory(const std::filesystem::path& path) {
-	namespace fs = std::filesystem;
-
-	for (const auto& entry : fs::directory_iterator(path)) {
+	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		if (entry.is_regular_file()) {
 			encryptFile(entry.path());
 		}
@@ -26,9 +19,14 @@ int DirectoryEncryptor::EncryptDirectory(const std::filesystem::path& path) {
 			this->EncryptDirectory(entry.path());
 		}
 	}
+
+	return 1;
 }
 
 int DirectoryEncryptor::DecryptDirectory(const std::filesystem::path& path) {
+	dec = Botan::Cipher_Mode::create_or_throw(cipher, Botan::Cipher_Dir::Decryption);
+	dec->set_key(cryptoKey);
+
 	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		if (entry.is_regular_file()) {
 			this->decryptFile(entry.path());
@@ -37,17 +35,17 @@ int DirectoryEncryptor::DecryptDirectory(const std::filesystem::path& path) {
 			this->DecryptDirectory(entry.path());
 		}
 	}
+
+	return 1;
 }
 
 void DirectoryEncryptor::excludeExtension(const std::string& extension) {
-	std::filesystem::path ext(extension);
-	exclusions.insert(ext);
+	exclusions.insert(std::filesystem::path(extension));
 }
 
 void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extensions) {
 	for (auto& e : extensions) {
-		std::filesystem::path ext(e);
-		exclusions.insert(ext);
+		exclusions.insert(std::filesystem::path(e));
 	}
 }
 
@@ -85,14 +83,24 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath) {
 
 		Botan::secure_vector<uint8_t> pt(buffer.begin(), buffer.begin() + size);
 
-		if (file.eof()) {
-			dec->finish(pt);
+		try {
+			if (size) {
+				if (file.eof()) {
+					dec->finish(pt);
+				}
+				else dec->update(pt);
+
+				dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+			}
 		}
-		else dec->update(pt);
+		catch (std::exception& e) {
+			std::string errorLog = fPath.string() + " ";
+			errorLog.append(e.what());
 
-		dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+			errorInfo.push_back(errorLog);
+			decErrorCount += 1;
+		}
 	}
-
 	file.close();
 	dummyFile.close();
 
@@ -137,12 +145,19 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath) {
 		
 		Botan::secure_vector<uint8_t> pt(buffer.begin(), buffer.begin() + size);
 		
-		if (file.eof()) {
-			enc->finish(pt);
+		try {
+			if (size) {
+				if (file.eof()) {
+					enc->finish(pt);
+				}
+				else enc->update(pt);
+				dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+			}
 		}
-		else enc->update(pt);
-
-		dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+		catch (std::exception& e) {
+			errorInfo.push_back(e.what());
+			encErrorCount += 1;
+		}
 	}
 	file.close();
 	dummyFile.close();
@@ -160,4 +175,18 @@ bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath) {
 		}
 	}
 	return false;
+}
+
+void DirectoryEncryptor::decryptionErrors() {
+	std::cerr << "Total decryption error count: " << decErrorCount << '\n';
+	for (auto& e : errorInfo) {
+		std::cerr << e << '\n';
+	}
+}
+
+void DirectoryEncryptor::encryptionErrors() {
+	std::cerr << "Total encryption error count: " << encErrorCount << '\n';
+	for (auto& e : errorInfo) {
+		std::cerr << e << '\n';
+	}
 }

@@ -25,9 +25,11 @@ int main() {
 		switch (command) {
 		case 1:
 			fcrypt.DecryptDirectory(std::filesystem::path(path));
+			fcrypt.decryptionErrors();
 			break;
 		case 2:
 			fcrypt.EncryptDirectory(std::filesystem::path(path));
+			fcrypt.encryptionErrors();
 			break;
 		default:
 			break;

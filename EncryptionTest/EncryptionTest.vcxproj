@@ -136,10 +136,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Crypto.cpp" />
+    <ClCompile Include="ErrorLogger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Timekeeper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Crypto.hpp" />
+    <ClInclude Include="ErrorLogger.hpp" />
+    <ClInclude Include="Timekeeper.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

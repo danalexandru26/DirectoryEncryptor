@@ -13,9 +13,9 @@
 #include<set>
 #include<filesystem>
 
-constexpr uint16_t _CHUNK_ = 4096;
+constexpr uint16_t _CHUNK_ = 1024;
 constexpr uint16_t _IVLEN_ = 16;
-const std::string _TMPEXT_ = ".tmp";
+inline const char* _TMPEXT_ = ".encr";
 
 class DirectoryEncryptor {
 public:
@@ -30,8 +30,10 @@ public:
 	void excludeExtension(const std::string& extension);
 	void excludeExtension(const std::vector<std::string>& extensions);
 
+	void decryptionErrors();
+	void encryptionErrors();
+
 private:
-	void initializeBotan();
 	bool encryptFile(const std::filesystem::path& fPath);
 	bool decryptFile(const std::filesystem::path& fPath);
 	bool verifyExclusion(const std::filesystem::path& fPath);
@@ -42,4 +44,8 @@ private:
 	std::unique_ptr<Botan::Cipher_Mode> dec{};
 	std::set<std::filesystem::path> exclusions{};
 	std::string cipher{};
+
+	std::vector<std::string> errorInfo{};
+	std::size_t decErrorCount{};
+	std::size_t encErrorCount{};
 };
