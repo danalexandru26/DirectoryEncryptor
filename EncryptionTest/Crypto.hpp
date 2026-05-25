@@ -13,6 +13,9 @@
 #include<set>
 #include<filesystem>
 
+#include"Timekeeper.hpp"
+#include"ErrorLogger.hpp"
+
 constexpr uint16_t _CHUNK_ = 1024;
 constexpr uint16_t _IVLEN_ = 16;
 inline const char* _TMPEXT_ = ".encr";
@@ -48,4 +51,7 @@ private:
 	std::vector<std::string> errorInfo{};
 	std::size_t decErrorCount{};
 	std::size_t encErrorCount{};
+
+	Timekeeper record{};
+	ErrorLogger errorLog{};
 };
