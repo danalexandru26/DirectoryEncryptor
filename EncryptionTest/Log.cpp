@@ -1,46 +1,69 @@
 #include"Log.hpp"
 
+#include <source_location>
+
 Log::Log()
 {
 	manifest = std::filesystem::path(_DEFAULT_LOG_PATH_);
+	fileHandle.open(manifest, std::ios::app | std::ios::out | std::ios::in);
 }
 
 Log::~Log()
-{	
-	if (fileHandle) {
-		for (auto& i : logCache)
-		{
-			fileHandle << i << '\n';
-		}
+{
+	if (fileHandle.is_open())
+	{
 		fileHandle.close();
 	}
 }
 
-bool Log::initFileHandle()
+bool Log::logMessage(const std::string& message, uint8_t level, const std::source_location& location)
 {
-	fileHandle.open(manifest, std::ios::out | std::ios::in | std::ios::app);
+	std::chrono::system_clock::time_point systemClock = std::chrono::system_clock::now();
+	std::string logMessage = std::format("[{}] [{}] Severity[{}]: {}\n", systemClock, location.function_name(), level,
+	                                     message);
 
+	if (level >= 2)
+	{
+		return directTransfer(logMessage);
+	}
+
+	logCache.push_back(logMessage);
+	if (logCache.size() >= _LOG_ENTRY_MAX_)
+	{
+		return cacheTransfer();
+	}
+
+	return true;
+}
+
+bool Log::cacheTransfer()
+{
+	for (auto& log : logCache)
+	{
+		bool op = fileWrite(log);
+		if (!op)return false;
+	}
+	fileHandle.flush();
+	logCache.clear();
+
+	return true;
+}
+
+bool Log::directTransfer(const std::string& message)
+{
+	bool op = fileWrite(message);
+	if (op) fileHandle.flush();
+
+	return op;
+}
+
+bool Log::fileWrite(const std::string& message)
+{
 	if (!fileHandle.is_open())
 	{
 		return false;
 	}
-	return true;
-}
-
-bool Log::logMessage(const std::string& message)
-{
-	if (!fileHandle.is_open())
-	{
-		bool result = this->initFileHandle();
-		std::cerr << "There is no file handle to the log descriptor. Attempting to open file\n";
-		if (!result)
-		{
-			std::cerr << "Log file handle cannot be opened\n";
-			return false;
-		}
-		std::cerr << "File handle successfully opened\n";
-	}
-	fileHandle << "Severity: " << Severity::INFO << ' ' << message << '\n';
+	fileHandle.write(message.data(), message.size());
 
 	return true;
 }
@@ -49,14 +72,14 @@ bool Log::moveLog(const std::filesystem::path& path)
 {
 	if (!fileHandle.is_open())
 	{
-		std::cerr << "Log file handle is inaccessible, transfer of log data cannot be performed\n";
+		std::cerr << "Log file handler cannot be instantiated\n";
 		return false;
 	}
 
-	std::fstream dummyHandle(path, std::ios::out | std::ios::in | std::ios::app);
+	std::fstream dummyHandle(path, std::ios::out | std::ios::app);
 	if (!dummyHandle.is_open())
 	{
-		std::cerr << "New log destination file handle cannot be opened or created\n";
+		std::cerr << "New log destination file handle cannot instantiated\n";
 		return false;
 	}
 
@@ -68,10 +91,8 @@ bool Log::moveLog(const std::filesystem::path& path)
 		std::streamsize size = fileHandle.gcount();
 		dummyHandle.write(buffer.data(), size);
 	}
-	
-
-	fileHandle = std::move(dummyHandle);
 	manifest = path;
+	fileHandle = std::move(dummyHandle);
 
 	return true;
 }

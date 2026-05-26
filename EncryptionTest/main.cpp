@@ -10,10 +10,18 @@ const std::string blockCipher{"AES-128/CBC/PKCS7"};
 void encryptionApplicationTest();
 void loggingApplicationTest();
 
+#define LOG_TEST
+
 int main()
 {
-	//loggingApplicationTest();
+#ifdef LOG_TEST
+	loggingApplicationTest();
+#else
+	#ifdef ENC_TEST
 	encryptionApplicationTest();
+#endif
+#endif
+
 
 	return 0;
 }
@@ -57,7 +65,7 @@ void loggingApplicationTest()
 		switch (userInput)
 		{
 		case 1:
-			logTest.logMessage("Hello World from main application - logging test");
+			logTest.logMessage("Hello World from main application - logging test", 0);
 			break;
 		case 2:
 			{

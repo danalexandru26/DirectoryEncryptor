@@ -1,0 +1,8 @@
+[2026-05-26 22:04:26.9813760] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:27.3018033] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:28.6606543] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:30.0657978] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:30.5759010] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:31.0163024] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:32.3539058] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
+[2026-05-26 22:04:32.6668498] [void __cdecl loggingApplicationTest(void)] Severity[0]: Hello World from main application - logging test
