@@ -12,7 +12,8 @@ void loggingApplicationTest();
 
 int main()
 {
-	loggingApplicationTest();
+	//loggingApplicationTest();
+	encryptionApplicationTest();
 
 	return 0;
 }

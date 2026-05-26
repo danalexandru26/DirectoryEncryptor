@@ -102,34 +102,25 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 	file.read(reinterpret_cast<char*>(iv.data()), iv.size());
 	dec->start(iv);
 
-	while (!file.eof())
+	while (file.read(buffer.data(), _CHUNK_) || file.gcount() > 0)
 	{
-		file.read(buffer.data(), _CHUNK_);
 		std::streamsize size = file.gcount();
-
 		Botan::secure_vector<uint8_t> pt(buffer.begin(), buffer.begin() + size);
-
 		try
 		{
-			if (size)
+			if (file.eof())
 			{
-				if (file.eof())
-				{
-					dec->finish(pt);
-				}
-				else dec->update(pt);
-
-				dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+				dec->finish(pt);
 			}
+			else dec->update(pt);
+			dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
 		}
 		catch (std::exception& e)
 		{
-			std::string errorLog = fPath.string() + " ";
-			errorLog.append(e.what());
-
-			errorInfo.push_back(errorLog);
+			//TODO
 		}
 	}
+
 	file.close();
 	dummyFile.close();
 
@@ -171,36 +162,35 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 	enc->start(iv);
 	dummyFile.write(reinterpret_cast<const char*>(iv.data()), iv.size());
 
-	while (!file.eof())
+	while (file.read(buffer.data(), _CHUNK_) || file.gcount() > 0)
 	{
-		file.read(buffer.data(), _CHUNK_);
 		std::streamsize size = file.gcount();
-
 		Botan::secure_vector<uint8_t> pt(buffer.begin(), buffer.begin() + size);
 
 		try
 		{
-			if (size)
+			if (file.eof())
 			{
-				if (file.eof())
-				{
-					enc->finish(pt);
-				}
-				else enc->update(pt);
-				dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
+				enc->finish(pt);
 			}
+			else
+			{
+				enc->update(pt);
+			}
+			dummyFile.write(reinterpret_cast<const char*>(pt.data()), pt.size());
 		}
 		catch (std::exception& e)
 		{
-			errorInfo.push_back(e.what());
+			//TODO
 		}
 	}
+
 	file.close();
 	dummyFile.close();
 
 	std::filesystem::remove(fPath);
 	std::filesystem::rename(dummyPath, fPath);
-	manifest.record(fPath, { JSONKeys::Timestamp, JSONKeys::Filesize });
+	manifest.record(fPath, {JSONKeys::Timestamp, JSONKeys::Filesize});
 	return true;
 }
 
