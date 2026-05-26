@@ -62,11 +62,10 @@ bool Log::moveLog(const std::filesystem::path& path)
 
 	fileHandle.seekg(0, std::ios::beg);
 	std::vector<char> buffer(_LOG_CHUNK_);
-	while (!fileHandle.eof())
-	{
-		fileHandle.read(buffer.data(), _LOG_CHUNK_);
-		std::streamsize size = fileHandle.gcount();
 
+	while (fileHandle.read(buffer.data(), _LOG_CHUNK_) || fileHandle.gcount() > 0)
+	{
+		std::streamsize size = fileHandle.gcount();
 		dummyHandle.write(buffer.data(), size);
 	}
 	
