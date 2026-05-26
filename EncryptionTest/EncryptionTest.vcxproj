@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Crypto.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\CppLibs\include\single_include\nlohmann\json.hpp" />
+    <ClInclude Include="Application.hpp" />
     <ClInclude Include="Crypto.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="JMetadata.hpp" />
