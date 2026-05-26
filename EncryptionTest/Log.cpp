@@ -12,6 +12,7 @@ Log::~Log()
 {
 	if (fileHandle.is_open())
 	{
+		cacheTransfer();
 		fileHandle.close();
 	}
 }
@@ -76,7 +77,7 @@ bool Log::moveLog(const std::filesystem::path& path)
 		return false;
 	}
 
-	std::fstream dummyHandle(path, std::ios::out | std::ios::app);
+	std::fstream dummyHandle(path, std::ios::app | std::ios::out | std::ios::in);
 	if (!dummyHandle.is_open())
 	{
 		std::cerr << "New log destination file handle cannot instantiated\n";

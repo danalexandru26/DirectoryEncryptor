@@ -3,7 +3,7 @@ using json = nlohmann::json;
 
 JMetadata::JMetadata()
 {
-	manifest = "timeMetadata.json";
+	manifest = _JMETA_PATH_;
 }
 
 JMetadata::JMetadata(const std::filesystem::path& fPath) : manifest{fPath}
@@ -29,10 +29,8 @@ void JMetadata::record(const std::filesystem::path& path, const JSONKeys& key)
 		data[path.generic_string()][_JMETA_FILESIZE_] = this->computeFilesize(path);
 		break;
 	case JSONKeys::Hash:
-		std::cerr << "File hash and checksums are not supported yet\n";
 		break;
 	default:
-		std::cerr << "Invalid JSON object key\n";
 		break;
 	}
 }
@@ -41,7 +39,7 @@ bool JMetadata::saveJM()
 {
 	std::ofstream file(manifest);
 
-	if (!file)
+	if (!file.is_open())
 	{
 		std::cerr << "Manifest file cannot be opened or created\n";
 		return false;
@@ -64,4 +62,3 @@ uintmax_t JMetadata::computeFilesize(const std::filesystem::path& path)
 {
 	return std::filesystem::file_size(path);
 }
-

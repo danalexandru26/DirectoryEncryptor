@@ -10,6 +10,7 @@
 constexpr auto _JMETA_TIMESTAMP_ = "Timestamp";
 constexpr auto _JMETA_FILESIZE_ = "Filesize";
 constexpr auto _JMETA_HASH_ = "Hash/Checksum";
+constexpr auto _JMETA_PATH_ = "timeMetadata.json";
 
 using json = nlohmann::json;
 
@@ -35,6 +36,7 @@ public:
 private:
 	std::time_t computeTimestamp(const std::filesystem::path& path);
 	uintmax_t computeFilesize(const std::filesystem::path& path);
+
 private:
 	json data{};
 	std::filesystem::path manifest{};
