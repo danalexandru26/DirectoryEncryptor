@@ -21,7 +21,7 @@
     <ClCompile Include="Crypto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ErrorLogger.cpp">
+    <ClCompile Include="Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JMetadata.cpp">
@@ -32,7 +32,7 @@
     <ClInclude Include="Crypto.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ErrorLogger.hpp">
+    <ClInclude Include="Log.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="JMetadata.hpp">

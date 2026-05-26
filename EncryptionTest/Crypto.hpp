@@ -14,7 +14,6 @@
 #include<filesystem>
 
 #include"JMetadata.hpp"
-#include"ErrorLogger.hpp"
 
 constexpr uint16_t _CHUNK_ = 1024;
 constexpr uint16_t _IVLEN_ = 16;
@@ -32,9 +31,6 @@ public:
 	void excludeExtension(const std::string& extension);
 	void excludeExtension(const std::vector<std::string>& extensions);
 
-	void decryptionErrors();
-	void encryptionErrors();
-
 private:
 	void encryptDirectory(const std::filesystem::path& path);
 	void decryptDirectory(const std::filesystem::path& path);
@@ -50,9 +46,6 @@ private:
 	std::string cipher{};
 
 	std::vector<std::string> errorInfo{};
-	std::size_t decErrorCount{};
-	std::size_t encErrorCount{};
 
 	JMetadata manifest{};
-	ErrorLogger errorLog{};
 };

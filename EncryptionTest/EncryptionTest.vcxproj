@@ -142,14 +142,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Crypto.cpp" />
-    <ClCompile Include="ErrorLogger.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="JMetadata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\CppLibs\include\single_include\nlohmann\json.hpp" />
     <ClInclude Include="Crypto.hpp" />
-    <ClInclude Include="ErrorLogger.hpp" />
+    <ClInclude Include="Log.hpp" />
     <ClInclude Include="JMetadata.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -128,7 +128,6 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 			errorLog.append(e.what());
 
 			errorInfo.push_back(errorLog);
-			decErrorCount += 1;
 		}
 	}
 	file.close();
@@ -194,16 +193,14 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 		catch (std::exception& e)
 		{
 			errorInfo.push_back(e.what());
-			encErrorCount += 1;
 		}
 	}
 	file.close();
 	dummyFile.close();
 
-	manifest.record(fPath);
 	std::filesystem::remove(fPath);
 	std::filesystem::rename(dummyPath, fPath);
-
+	manifest.record(fPath, { JSONKeys::Timestamp, JSONKeys::Filesize });
 	return true;
 }
 
@@ -217,22 +214,4 @@ bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath)
 		}
 	}
 	return false;
-}
-
-void DirectoryEncryptor::decryptionErrors()
-{
-	std::cerr << "Total decryption error count: " << decErrorCount << '\n';
-	for (auto& e : errorInfo)
-	{
-		std::cerr << e << '\n';
-	}
-}
-
-void DirectoryEncryptor::encryptionErrors()
-{
-	std::cerr << "Total encryption error count: " << encErrorCount << '\n';
-	for (auto& e : errorInfo)
-	{
-		std::cerr << e << '\n';
-	}
 }
