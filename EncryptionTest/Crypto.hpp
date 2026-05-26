@@ -13,7 +13,7 @@
 #include<set>
 #include<filesystem>
 
-#include"Timekeeper.hpp"
+#include"JMetadata.hpp"
 #include"ErrorLogger.hpp"
 
 constexpr uint16_t _CHUNK_ = 1024;
@@ -27,9 +27,8 @@ public:
 	DirectoryEncryptor(const DirectoryEncryptor& other) = delete;
 	DirectoryEncryptor& operator=(const DirectoryEncryptor& other) = delete;
 
-	int EncryptDirectory(const std::filesystem::path& path);
-	int DecryptDirectory(const std::filesystem::path& path);
-
+	void encrypt(const std::filesystem::path& path);
+	void decrypt(const std::filesystem::path& path);
 	void excludeExtension(const std::string& extension);
 	void excludeExtension(const std::vector<std::string>& extensions);
 
@@ -37,6 +36,8 @@ public:
 	void encryptionErrors();
 
 private:
+	void encryptDirectory(const std::filesystem::path& path);
+	void decryptDirectory(const std::filesystem::path& path);
 	bool encryptFile(const std::filesystem::path& fPath);
 	bool decryptFile(const std::filesystem::path& fPath);
 	bool verifyExclusion(const std::filesystem::path& fPath);
@@ -52,6 +53,6 @@ private:
 	std::size_t decErrorCount{};
 	std::size_t encErrorCount{};
 
-	Timekeeper record{};
+	JMetadata manifest{};
 	ErrorLogger errorLog{};
 };

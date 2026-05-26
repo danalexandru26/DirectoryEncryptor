@@ -24,7 +24,7 @@
     <ClCompile Include="ErrorLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Timekeeper.cpp">
+    <ClCompile Include="JMetadata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="ErrorLogger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Timekeeper.hpp">
+    <ClInclude Include="JMetadata.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\CppLibs\include\single_include\nlohmann\json.hpp">
