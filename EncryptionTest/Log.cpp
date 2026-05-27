@@ -8,6 +8,12 @@ Log::Log()
 	fileHandle.open(manifest, std::ios::app | std::ios::out | std::ios::in);
 }
 
+Log::Log(std::filesystem::path path)
+{
+	manifest = std::move(path);
+	fileHandle.open(manifest, std::ios::in | std::ios::out | std::ios::app);
+}
+
 Log::~Log()
 {
 	if (fileHandle.is_open())
@@ -15,6 +21,19 @@ Log::~Log()
 		cacheTransfer();
 		fileHandle.close();
 	}
+}
+
+Log& Log::operator=(Log&& other) noexcept
+{
+	if (this != &other)
+	{
+		manifest = std::move(other.manifest);
+		fileHandle = std::move(other.fileHandle);
+		logCache = std::move(other.logCache);
+		config = other.config;
+	}
+
+	return *this;
 }
 
 bool Log::logMessage(const std::string& message, uint8_t level, const std::source_location& location)

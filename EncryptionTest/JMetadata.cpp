@@ -6,8 +6,19 @@ JMetadata::JMetadata()
 	manifest = _JMETA_PATH_;
 }
 
-JMetadata::JMetadata(const std::filesystem::path& fPath) : manifest{fPath}
+JMetadata::JMetadata(std::filesystem::path path)
 {
+	manifest = std::move(path);
+}
+
+JMetadata& JMetadata::operator=(JMetadata&& other) noexcept
+{
+	if (this != &other)
+	{
+		data = std::move(other.data);
+		manifest = std::move(other.manifest);
+	}
+	return *this;
 }
 
 void JMetadata::record(const std::filesystem::path& path, const std::vector<JSONKeys>& keys)

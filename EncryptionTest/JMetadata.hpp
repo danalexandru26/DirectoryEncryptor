@@ -25,9 +25,11 @@ class JMetadata
 {
 public:
 	JMetadata();
-	JMetadata(const std::filesystem::path& fPath);
+	JMetadata(std::filesystem::path path);
+
 	JMetadata(const JMetadata& other) = delete;
 	JMetadata& operator=(const JMetadata& other) = delete;
+	JMetadata& operator=(JMetadata&& other) noexcept;
 
 	void record(const std::filesystem::path& path, const JSONKeys& key);
 	void record(const std::filesystem::path& path, const std::vector<JSONKeys>& keys);

@@ -20,15 +20,19 @@ struct LogConfiguration
 
 	std::size_t cacheSize{};
 	uint16_t chunkSize{};
+	uint8_t severityThreshold{};
 };
 
 class Log
 {
 public:
 	Log();
+	Log(std::filesystem::path path);
 	virtual ~Log();
+
 	Log(const Log& other) = delete;
 	Log& operator=(const Log& other) = delete;
+	Log& operator=(Log&& other) noexcept;
 
 	bool logMessage(const std::string& message, uint8_t level,
 	                const std::source_location& location = std::source_location::current());
@@ -39,9 +43,8 @@ private:
 	bool cacheTransfer();
 	bool directTransfer(const std::string& message);
 
-private:
-	std::fstream fileHandle{};
 	std::filesystem::path manifest{};
+	std::fstream fileHandle{};
 	std::vector<std::string> logCache{};
 	LogConfiguration config{};
 };

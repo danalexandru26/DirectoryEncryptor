@@ -1,19 +1,31 @@
 #include"Crypto.hpp"
 
-DirectoryEncryptor::DirectoryEncryptor()
-{
-};
-
 DirectoryEncryptor::DirectoryEncryptor(const std::string& key, const std::string& cipher)
 {
 	this->cipher = cipher;
 	cryptoKey = Botan::hex_decode_locked(key);
 };
 
+DirectoryEncryptor& DirectoryEncryptor::operator=(DirectoryEncryptor&& other) noexcept
+{
+	if (this != & other)
+	{
+		cryptoKey = std::move(other.cryptoKey);
+		enc = std::move(other.enc);
+		dec = std::move(other.dec);
+		exclusions = std::move(other.exclusions);
+		cipher = std::move(other.cipher);
+
+		LOG_ = std::move(other.LOG_);
+		METADATA_ = std::move(other.METADATA_);
+	}
+	return *this;
+}
+
 void DirectoryEncryptor::encrypt(const std::filesystem::path& path)
 {
 	this->encryptDirectory(path);
-	manifest.saveJM();
+	METADATA_.saveJM();
 }
 
 void DirectoryEncryptor::decrypt(const std::filesystem::path& path)
@@ -68,6 +80,12 @@ void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extens
 	{
 		exclusions.insert(std::filesystem::path(e));
 	}
+}
+
+void DirectoryEncryptor::initializeLog(const std::filesystem::path& path)
+{
+	LOG_ = Log(
+		path);
 }
 
 bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
@@ -190,7 +208,7 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 
 	std::filesystem::remove(fPath);
 	std::filesystem::rename(dummyPath, fPath);
-	manifest.record(fPath, {JSONKeys::Timestamp, JSONKeys::Filesize});
+	METADATA_.record(fPath, {JSONKeys::Timestamp, JSONKeys::Filesize});
 	return true;
 }
 
