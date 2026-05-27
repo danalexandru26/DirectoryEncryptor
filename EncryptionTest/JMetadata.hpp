@@ -39,7 +39,6 @@ private:
 	std::time_t computeTimestamp(const std::filesystem::path& path);
 	uintmax_t computeFilesize(const std::filesystem::path& path);
 
-private:
 	json data{};
 	std::filesystem::path manifest{};
 };

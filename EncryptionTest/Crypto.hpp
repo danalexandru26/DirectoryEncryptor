@@ -1,11 +1,9 @@
 #pragma once
-
 #include<botan/auto_rng.h>
 #include<botan/cipher_mode.h>
 #include<botan/block_cipher.h>
 #include<botan/hex.h>
 #include<botan/rng.h>
-
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -45,7 +43,6 @@ private:
 	bool decryptFile(const std::filesystem::path& fPath);
 	bool verifyExclusion(const std::filesystem::path& fPath);
 
-private:
 	Botan::secure_vector<uint8_t> cryptoKey{};
 	std::unique_ptr<Botan::Cipher_Mode> enc{};
 	std::unique_ptr<Botan::Cipher_Mode> dec{};

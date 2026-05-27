@@ -8,7 +8,7 @@ DirectoryEncryptor::DirectoryEncryptor(const std::string& key, const std::string
 
 DirectoryEncryptor& DirectoryEncryptor::operator=(DirectoryEncryptor&& other) noexcept
 {
-	if (this != & other)
+	if (this != &other)
 	{
 		cryptoKey = std::move(other.cryptoKey);
 		enc = std::move(other.enc);
@@ -69,37 +69,18 @@ void DirectoryEncryptor::decryptDirectory(const std::filesystem::path& path)
 	}
 }
 
-void DirectoryEncryptor::excludeExtension(const std::string& extension)
-{
-	exclusions.insert(std::filesystem::path(extension));
-}
-
-void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extensions)
-{
-	for (auto& e : extensions)
-	{
-		exclusions.insert(std::filesystem::path(e));
-	}
-}
-
-void DirectoryEncryptor::initializeLog(const std::filesystem::path& path)
-{
-	LOG_ = Log(
-		path);
-}
-
 bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 {
 	if (verifyExclusion(fPath))
 	{
-		std::cerr << "File extension is in the exclusion list. Path: " << fPath << '\n';
+		LOG_.logMessage("Decryption-Exclusion List", fPath.string(), 0);
 		return false;
 	}
 
 	std::fstream file(fPath, std::ios::binary | std::ios::in);
 	if (!file)
 	{
-		std::cerr << "Invalid Path: " << fPath << '\n';
+		LOG_.logMessage("Decryption-Invalid File", fPath.string(), 1);
 		return false;
 	}
 
@@ -109,10 +90,10 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 	std::ofstream dummyFile(dummyPath, std::ios::out | std::ios::binary);
 	if (!file)
 	{
-		std::cerr << "Temporary file cannot be created. Decryption failed for: " << fPath << '\n';
+		LOG_.logMessage("Decryption", fPath.string(), 2);
 		return false;
 	}
-	std::cerr << "Currently Decrypting: " << fPath << '\n';
+	LOG_.logMessage("Decryption", fPath.string(), 0);
 
 	std::vector<char> buffer(_CHUNK_);
 	std::vector<uint8_t> iv(_IVLEN_);
@@ -135,7 +116,7 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 		}
 		catch (std::exception& e)
 		{
-			//TODO
+			LOG_.logMessage("Decryption-Critical Failure", fPath.string(), 3);
 		}
 	}
 
@@ -212,6 +193,19 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 	return true;
 }
 
+void DirectoryEncryptor::excludeExtension(const std::string& extension)
+{
+	exclusions.insert(std::filesystem::path(extension));
+}
+
+void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extensions)
+{
+	for (auto& e : extensions)
+	{
+		exclusions.insert(std::filesystem::path(e));
+	}
+}
+
 bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath)
 {
 	for (auto& e : exclusions)
@@ -222,4 +216,14 @@ bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath)
 		}
 	}
 	return false;
+}
+
+void DirectoryEncryptor::initializeLog(const std::filesystem::path& path)
+{
+	LOG_ = Log(path);
+}
+
+void DirectoryEncryptor::initializeMetadata(const std::filesystem::path& path)
+{
+	METADATA_ = JMetadata(path);
 }

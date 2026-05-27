@@ -36,10 +36,12 @@ Log& Log::operator=(Log&& other) noexcept
 	return *this;
 }
 
-bool Log::logMessage(const std::string& message, uint8_t level, const std::source_location& location)
+bool Log::logMessage(const std::string& scope, const std::string& message, uint8_t level,
+                     const std::source_location& location)
 {
 	std::chrono::system_clock::time_point systemClock = std::chrono::system_clock::now();
-	std::string logMessage = std::format("[{}] [{}] Severity[{}]: {}\n", systemClock, location.function_name(), level,
+	std::string logMessage = std::format("[{}] [{}] Scope[{}] Severity[{}]: {}\n", systemClock,
+	                                     location.function_name(), scope, level,
 	                                     message);
 
 	if (level >= 2)
@@ -115,4 +117,9 @@ bool Log::moveLog(const std::filesystem::path& path)
 	fileHandle = std::move(dummyHandle);
 
 	return true;
+}
+
+bool Log::isActive()
+{
+	return fileHandle.is_open();
 }
