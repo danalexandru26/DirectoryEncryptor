@@ -57,14 +57,14 @@ void loggingApplicationTest()
 
 void fileStreamApplicationTest()
 {
-	std::filesystem::path filePath("fileStreamWriterTest.txt");
-	FileStreamWriter fileStream(filePath);
+	std::filesystem::path path("fileStreamWriterTest.txt");
+	FileStreamWriter fileStream(path);
 
 	int userInput{-1};
 
 	while (userInput)
 	{
-		std::cout << "0 - QUIT 1 - TEST FILE STREAM WRITER\n";
+		std::cout << "0 - QUIT 1 - WRITE BYTE ARRAY 2 - WRITE STRING\n";
 		std::cin >> userInput;
 
 		switch (userInput)
@@ -78,10 +78,17 @@ void fileStreamApplicationTest()
 				container.version = 1;
 				container.IV = fillVector<uint8_t>(15, 100);
 
-				std::filesystem::path path("fileStreamWriteTest.txt");
-				FileStreamWriter fileStream(path);
-
 				fileStream.writeObject(container);
+			}
+			break;
+		case 2:
+			{
+				std::string string{};
+
+				std::cout << "Input string to serialize: ";
+				std::cin >> string;
+
+				fileStream.writeString(string);
 			}
 			break;
 		}

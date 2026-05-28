@@ -15,11 +15,9 @@ public:
 	FileStreamWriter(const FileStreamWriter& other) = delete;
 	FileStreamWriter(FileStreamWriter&& other) noexcept;
 
-	FileStreamWriter& operator=(const FileStreamWriter& other) = delete;
 	FileStreamWriter& operator=(FileStreamWriter&& other) noexcept;
 
 	bool writeData(const char* data, std::size_t size) final;
-	void writeString(const std::string& data) final;
 
 private:
 	void moveData(FileStreamWriter& other);

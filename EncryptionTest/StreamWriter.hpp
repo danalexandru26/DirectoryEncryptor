@@ -2,6 +2,7 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include<type_traits>
 
 
 class StreamWriter
@@ -10,7 +11,7 @@ public:
 	virtual ~StreamWriter() = default;
 
 	virtual bool writeData(const char* data, std::size_t size) = 0;
-	virtual void writeString(const std::string& data) = 0;
+	virtual void writeString(const std::string& string);
 
 	template <typename T>
 	void writeRaw(const T& type)
@@ -21,11 +22,7 @@ public:
 	template <typename T>
 	void writeObject(const T& type)
 	{
-		if constexpr (std::is_trivial<T>())
-		{
-			writeRaw(type);
-		}
-		else T::serialize(*this, type);
+		T::serialize(this, type);
 	}
 
 	template <typename T>

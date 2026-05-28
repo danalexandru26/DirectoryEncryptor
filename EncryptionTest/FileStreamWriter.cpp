@@ -45,14 +45,6 @@ bool FileStreamWriter::writeData(const char* data, std::size_t size)
 	return true;
 }
 
-void FileStreamWriter::writeString(const std::string& data)
-{
-	for (const auto& i : data)
-	{
-		writeData(&i, sizeof(i));
-	}
-}
-
 void FileStreamWriter::moveData(FileStreamWriter& other)
 {
 	mPath = std::move(other.mPath);
