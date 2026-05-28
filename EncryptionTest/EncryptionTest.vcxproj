@@ -143,11 +143,13 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Crypto.cpp" />
+    <ClCompile Include="FileStreamReader.cpp" />
     <ClCompile Include="FileStreamWriter.cpp" />
     <ClCompile Include="HeaderContainer.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="JMetadata.cpp" />
+    <ClCompile Include="StreamReader.cpp" />
     <ClCompile Include="StreamWriter.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
@@ -155,10 +157,12 @@
     <ClInclude Include="..\..\..\CppLibs\include\single_include\nlohmann\json.hpp" />
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Crypto.hpp" />
+    <ClInclude Include="FileStreamReader.hpp" />
     <ClInclude Include="FileStreamWriter.hpp" />
     <ClInclude Include="HeaderContainer.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="JMetadata.hpp" />
+    <ClInclude Include="StreamReader.hpp" />
     <ClInclude Include="StreamWriter.hpp" />
     <ClInclude Include="Utilities.hpp" />
   </ItemGroup>
