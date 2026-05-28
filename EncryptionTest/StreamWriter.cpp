@@ -1,6 +1,7 @@
 #include"StreamWriter.hpp"
 
-void StreamWriter::writeString(const std::string& string) {
+void StreamWriter::writeString(const std::string& string)
+{
 	std::size_t size = string.size();
 
 	writeRaw(size);

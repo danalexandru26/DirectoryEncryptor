@@ -91,6 +91,8 @@ void fileStreamApplicationTest()
 				fileStream.writeString(string);
 			}
 			break;
+		default:
+			break;
 		}
 	}
 }
