@@ -55,44 +55,109 @@ void loggingApplicationTest()
 	}
 }
 
-void fileStreamApplicationTest()
+/////////////////////////
+/// FILE READER TESTS////
+////////////////////////
+
+bool ReadRaw(const std::filesystem::path& path)
 {
-	std::filesystem::path path("fileStreamWriterTest.txt");
-	FileStreamWriter fileStream(path);
+	std::fstream wStream{};
 
-	int userInput{-1};
-
-	while (userInput)
+	wStream.open(path, std::ios::out | std::ios::binary);
+	if (!wStream.is_open())
 	{
-		std::cout << "0 - QUIT 1 - WRITE BYTE ARRAY 2 - WRITE STRING\n";
-		std::cin >> userInput;
+		std::cerr << "Could not perform test configuration by writing to file: " << path << '\n';
+		return false;
+	}
 
-		switch (userInput)
+	char wData{'@'};
+	wStream.write(&wData, 1);
+	wStream.close();
+
+	{
+		FileReader reader(path);
+
+		if (reader.status())
 		{
-		case 0:
-			std::cerr << "Exiting application\n";
-			break;
-		case 1:
-			{
-				HeaderContainer container;
-				container.version = 1;
-				container.IV = fillVector<uint8_t>(15, 100);
-
-				fileStream.writeObject(container);
-			}
-			break;
-		case 2:
-			{
-				std::string string{};
-
-				std::cout << "Input string to serialize: ";
-				std::cin >> string;
-
-				fileStream.writeString(string);
-			}
-			break;
-		default:
-			break;
+			char rData{};
+			reader.readRaw(&rData, 1);
+			compare(wData, rData);
 		}
 	}
+	Test_cleanup(path);
+	return true;
+}
+
+bool ReadArray(const std::filesystem::path& path)
+{
+	std::fstream wStream{};
+
+	wStream.open(path, std::ios::out | std::ios::binary);
+	if (!wStream.is_open())
+	{
+		std::cerr << "Could not perform test configuration by writing to file: " << path << '\n';
+		return false;
+	}
+
+	std::vector<char> wData{'t', 'e', 's', 't'};
+	wStream.write(wData.data(), wData.size());
+	wStream.close();
+
+	{
+		FileReader reader(path);
+
+		if (reader.status())
+		{
+			std::vector<char> rData{};
+			rData.resize(wData.size());
+
+			rData = reader.readRawArray(rData.size());
+			compare(wData, rData);
+		}
+	}
+	Test_cleanup(path);
+	return true;
+}
+
+bool ReadAll(const std::filesystem::path& path)
+{
+	FileReader reader(path);
+
+	try
+	{
+		std::vector<char> buffer = reader.readAll();
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << std::format("Error: {} || Location: {}", e.what(),
+		                         std::source_location::current().function_name());
+		return false;
+	}
+	return true;
+}
+
+bool ReadChunk(const std::filesystem::path& path)
+{
+	constexpr uint16_t _chunk = 4096;
+
+	std::vector<char> buffer(_chunk);
+	FileReader reader(path);
+
+	reader.readChunk(buffer.data(), _chunk);
+	std::cout << buffer.data() << '\n';
+
+	return true;
+}
+
+bool ReadAllChunks(const std::filesystem::path& path)
+{
+	FileReader reader(path);
+
+
+}
+
+
+void Test_cleanup(const std::filesystem::path& path)
+{
+	std::filesystem::remove(path);
 }

@@ -6,18 +6,17 @@
 
 #define STREAM_TEST
 
+void Test_fileReader();
+
 int main()
 {
-#ifdef ENC_TEST
-	encryptionApplicationTest();
-#endif
-#ifdef LOG_TEST
-	encryptionApplicationTest();
-	#endif
-#ifdef STREAM_TEST
-	fileStreamApplicationTest();
-#endif
-
-
+	Test_fileReader();
 	return 0;
+}
+
+void Test_fileReader()
+{
+	ReadRaw("test_read.txt");
+	ReadArray("test_read_array.txt");
+	ReadChunk("D:\\FPGA_Dev\\Digilent\\Zynq-7020\\Arty-Z7-20-Master.xdc");
 }

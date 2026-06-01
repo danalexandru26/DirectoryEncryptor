@@ -2,7 +2,7 @@
 #include<vector>
 #include<cstdint>
 
-#include"StreamWriter.hpp"
+class StreamWriter;
 
 struct HeaderContainer
 {
