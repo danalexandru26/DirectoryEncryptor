@@ -71,7 +71,7 @@ bool ReadRaw(const std::filesystem::path& path)
 	wStream.close();
 
 	{
-		FileReader reader(path);
+		FileStreamReader reader(path);
 
 		if (reader.state())
 		{
@@ -100,7 +100,7 @@ bool ReadArray(const std::filesystem::path& path)
 	wStream.close();
 
 	{
-		FileReader reader(path);
+		FileStreamReader reader(path);
 
 		if (reader.state())
 		{
@@ -117,7 +117,7 @@ bool ReadArray(const std::filesystem::path& path)
 
 bool ReadAll(const std::filesystem::path& path)
 {
-	FileReader reader(path);
+	FileStreamReader reader(path);
 
 	try
 	{
@@ -137,7 +137,7 @@ bool ReadChunk(const std::filesystem::path& path)
 	constexpr uint16_t _chunk = 4096;
 
 	std::vector<char> buffer(_chunk);
-	FileReader reader(path);
+	FileStreamReader reader(path);
 
 	reader.readChunk(buffer.data(), _chunk);
 	std::cout << buffer.data() << '\n';

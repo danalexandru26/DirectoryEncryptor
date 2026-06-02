@@ -144,7 +144,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="CloudflareR2.cpp" />
     <ClCompile Include="Crypto.cpp" />
-    <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="FileStreamReader.cpp" />
     <ClCompile Include="HeaderContainer.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
@@ -157,7 +157,8 @@
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="CloudflareR2.hpp" />
     <ClInclude Include="Crypto.hpp" />
-    <ClInclude Include="FileReader.hpp" />
+    <ClInclude Include="FileStreamReader.hpp" />
+    <ClInclude Include="FileStreamWriter.hpp" />
     <ClInclude Include="HeaderContainer.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="JMetadata.hpp" />

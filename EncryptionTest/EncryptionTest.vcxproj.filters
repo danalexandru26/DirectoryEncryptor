@@ -36,7 +36,7 @@
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FileReader.cpp">
+    <ClCompile Include="FileStreamReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CloudflareR2.cpp">
@@ -68,13 +68,16 @@
     <ClInclude Include="Utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FileReader.hpp">
+    <ClInclude Include="FileStreamReader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CloudflareR2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SystemUtilities.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileStreamWriter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

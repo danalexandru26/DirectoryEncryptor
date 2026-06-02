@@ -8,7 +8,7 @@
 
 #include"HeaderContainer.hpp"
 #include"Crypto.hpp"
-#include"FileReader.hpp"
+#include"FileStreamReader.hpp"
 #include "CloudflareR2.hpp"
 
 inline static const std::string path{"D:\\Crypto\\SampleFiles"};

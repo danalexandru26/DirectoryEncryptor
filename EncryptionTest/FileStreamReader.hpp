@@ -4,16 +4,16 @@
 #include<filesystem>
 #include<string>
 
-class FileReader
+class FileStreamReader
 {
 public:
-	FileReader() = default;
-	FileReader(const std::filesystem::path& path);
-	FileReader(const FileReader& other) = delete;
-	FileReader(FileReader&& other) noexcept;
-	~FileReader();
+	FileStreamReader() = default;
+	FileStreamReader(const std::filesystem::path& path);
+	FileStreamReader(const FileStreamReader& other) = delete;
+	FileStreamReader(FileStreamReader&& other) noexcept;
+	~FileStreamReader();
 
-	FileReader& operator=(FileReader other);
+	FileStreamReader& operator=(FileStreamReader other);
 
 	void readRaw(char* destination, std::size_t count);
 	std::streamsize readChunk(char* buffer, std::size_t chunk);
@@ -21,12 +21,12 @@ public:
 	std::vector<char> readRawArray(std::size_t count);
 	std::string readString(std::size_t count);
 
-	void swap(FileReader& lhs, FileReader& rhs);
+	void swap(FileStreamReader& lhs, FileStreamReader& rhs);
 	int state();
 
 
 private:
-	void moveResources(FileReader& other);
+	void moveResources(FileStreamReader& other);
 
 	std::filesystem::path mPath;
 	std::fstream mFile;
