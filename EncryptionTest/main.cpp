@@ -20,9 +20,6 @@ int main()
 		return 1;
 	}
 
-
-
-
 	delete[] encryptionKey;
 	return 0;
 }
