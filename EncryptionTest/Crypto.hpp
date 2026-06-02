@@ -13,8 +13,9 @@
 
 #include"Log.hpp"
 #include"JMetadata.hpp"
+#include"CloudflareR2.hpp"
 
-constexpr uint16_t _CHUNK_ = 1024;
+constexpr uint32_t _CHUNK_ = 65536;
 constexpr uint16_t _IVLEN_ = 16;
 constexpr auto _TMPEXT_ = ".encr";
 

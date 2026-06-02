@@ -107,6 +107,7 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 		Botan::secure_vector<uint8_t> pt(buffer.begin(), buffer.begin() + size);
 		try
 		{
+			file.peek();
 			if (file.eof())
 			{
 				dec->finish(pt);
@@ -116,7 +117,7 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 		}
 		catch (std::exception& e)
 		{
-			LOG_.logMessage("Decryption-Critical Failure", fPath.string(), 3);
+			LOG_.logMessage("Decryption", fPath.string(), 3);
 		}
 	}
 
@@ -168,6 +169,7 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 
 		try
 		{
+			file.peek();
 			if (file.eof())
 			{
 				enc->finish(pt);
@@ -180,7 +182,7 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 		}
 		catch (std::exception& e)
 		{
-			//TODO
+			LOG_.logMessage("Encryption", fPath.string(), 3);
 		}
 	}
 
@@ -190,6 +192,7 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 	std::filesystem::remove(fPath);
 	std::filesystem::rename(dummyPath, fPath);
 	METADATA_.record(fPath, {JSONKeys::Timestamp, JSONKeys::Filesize});
+	//uploadToCloudflareR2(fPath.generic_string(), fPath.generic_string());
 	return true;
 }
 

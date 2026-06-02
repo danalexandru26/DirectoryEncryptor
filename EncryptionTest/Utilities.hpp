@@ -9,6 +9,7 @@
 #include"HeaderContainer.hpp"
 #include"Crypto.hpp"
 #include"FileReader.hpp"
+#include "CloudflareR2.hpp"
 
 inline static const std::string path{"D:\\Crypto\\SampleFiles"};
 inline static const std::string cryptoKey{"2B7E151628AED2A6ABF7158809CF4F3C"};
@@ -51,3 +52,5 @@ bool ReadAll(const std::filesystem::path& path);
 bool ReadChunk(const std::filesystem::path& path);
 bool ReadAllChunks(const std::filesystem::path& path);
 void Test_cleanup(const std::filesystem::path& path);
+
+void CloudflareUpload(const std::string& path, const std::string& cloudFilename);

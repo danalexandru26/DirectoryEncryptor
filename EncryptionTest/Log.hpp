@@ -8,7 +8,7 @@
 
 constexpr uint16_t _LOG_CHUNK_ = 4096;
 constexpr uint16_t _LOG_ENTRY_MAX_ = 2;
-const std::string _DEFAULT_LOG_PATH_ = "error_log.txt";
+const std::string _DEFAULT_LOG_PATH_ = "execution_log.txt";
 
 struct LogConfiguration
 {

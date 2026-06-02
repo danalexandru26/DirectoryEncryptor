@@ -55,10 +55,6 @@ void loggingApplicationTest()
 	}
 }
 
-/////////////////////////
-/// FILE READER TESTS////
-////////////////////////
-
 bool ReadRaw(const std::filesystem::path& path)
 {
 	std::fstream wStream{};
@@ -151,11 +147,30 @@ bool ReadChunk(const std::filesystem::path& path)
 
 bool ReadAllChunks(const std::filesystem::path& path)
 {
-	FileReader reader(path);
+	constexpr uint16_t _chunk = 2;
+	std::vector<char> buffer(_chunk);
 
+	std::ifstream file(path, std::ios::in | std::ios::binary);
 
+	while (file.read(buffer.data(), _chunk) || file.gcount() > 0)
+	{
+		file.peek();
+		if (file.eof())
+		{
+			std::cerr << "\nEnd of file reached " << buffer.data() << '\n';
+		}
+		else
+		{
+			std::cerr << "Not at EOF: " << buffer.data() << '\n';
+		}
+	}
+	return true;
 }
 
+void CloudflareUpload(const std::string& path, const std::string& cloudFilename)
+{
+	uploadToCloudflareR2(path, cloudFilename);
+}
 
 void Test_cleanup(const std::filesystem::path& path)
 {

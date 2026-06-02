@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="CloudflareR2.cpp" />
     <ClCompile Include="Crypto.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="HeaderContainer.cpp" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\CppLibs\include\single_include\nlohmann\json.hpp" />
     <ClInclude Include="Application.hpp" />
+    <ClInclude Include="CloudflareR2.hpp" />
     <ClInclude Include="Crypto.hpp" />
     <ClInclude Include="FileReader.hpp" />
     <ClInclude Include="HeaderContainer.hpp" />

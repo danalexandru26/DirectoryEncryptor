@@ -114,6 +114,7 @@ bool Log::moveLog(const std::filesystem::path& path)
 		dummyHandle.write(buffer.data(), size);
 	}
 	manifest = path;
+	fileHandle.close();
 	fileHandle = std::move(dummyHandle);
 
 	return true;

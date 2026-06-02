@@ -37,7 +37,7 @@ int FileReader::status()
 
 std::ios_base::iostate FileReader::state()
 {
-	return mFile.rdstate();
+	return mFile.eof();
 }
 
 std::vector<char> FileReader::readAll(std::streamsize limit)
