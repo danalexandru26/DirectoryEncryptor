@@ -169,7 +169,7 @@ bool ReadAllChunks(const std::filesystem::path& path)
 
 void CloudflareUpload(const std::string& path, const std::string& cloudFilename)
 {
-	uploadToCloudflareR2(path, cloudFilename);
+	
 }
 
 void Test_cleanup(const std::filesystem::path& path)
