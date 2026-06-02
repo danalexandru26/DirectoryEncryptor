@@ -149,6 +149,7 @@
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="JMetadata.cpp" />
+    <ClCompile Include="SystemUtilities.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="HeaderContainer.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="JMetadata.hpp" />
+    <ClInclude Include="SystemUtilities.hpp" />
     <ClInclude Include="Utilities.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

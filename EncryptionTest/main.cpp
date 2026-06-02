@@ -1,23 +1,28 @@
 #include<iostream>
 
 #include"Crypto.hpp"
-#include"Log.hpp"
 #include"Utilities.hpp"
-
-#define STREAM_TEST
-
-void Test_fileReader();
+#include"SystemUtilities.hpp"
 
 int main()
 {
-	encryptionApplicationTest();
-	return 0;
-}
+	constexpr std::string envEncryption("AES128_ENCRYPTION_KEY");
+	
+	const char* encryptionKey = readEnvironmentVariable(envEncryption);
 
-void Test_fileReader()
-{
-	ReadRaw("test_read.txt");
-	ReadArray("test_read_array.txt");
-	ReadChunk("D:\\FPGA_Dev\\Digilent\\Zynq-7020\\Arty-Z7-20-Master.xdc");
-	ReadAllChunks("readAllChunks.txt");
+	if (encryptionKey != nullptr)
+	{
+		std::cerr << encryptionKey << '\n';
+	}
+	else
+	{
+		std::cerr << "Encryption key environment variable is invalid\n";
+		return 1;
+	}
+
+
+
+
+	delete[] encryptionKey;
+	return 0;
 }

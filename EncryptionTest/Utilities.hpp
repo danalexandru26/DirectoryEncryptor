@@ -52,5 +52,3 @@ bool ReadAll(const std::filesystem::path& path);
 bool ReadChunk(const std::filesystem::path& path);
 bool ReadAllChunks(const std::filesystem::path& path);
 void Test_cleanup(const std::filesystem::path& path);
-
-void CloudflareUpload(const std::string& path, const std::string& cloudFilename);
