@@ -30,16 +30,6 @@ void FileReader::swap(FileReader& lhs, FileReader& rhs)
 	mFile.swap(rhs.mFile);
 }
 
-int FileReader::status()
-{
-	return mFile.is_open();
-}
-
-std::ios_base::iostate FileReader::state()
-{
-	return mFile.eof();
-}
-
 std::vector<char> FileReader::readAll(std::streamsize limit)
 {
 	mFile.seekg(0, std::ios::end);
@@ -92,4 +82,9 @@ void FileReader::moveResources(FileReader& other)
 		mPath = std::move(other.mPath);
 		mFile = std::move(other.mFile);
 	}
+}
+
+int FileReader::state()
+{
+	return mFile.is_open();
 }

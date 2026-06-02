@@ -73,7 +73,7 @@ bool ReadRaw(const std::filesystem::path& path)
 	{
 		FileReader reader(path);
 
-		if (reader.status())
+		if (reader.state())
 		{
 			char rData{};
 			reader.readRaw(&rData, 1);
@@ -102,7 +102,7 @@ bool ReadArray(const std::filesystem::path& path)
 	{
 		FileReader reader(path);
 
-		if (reader.status())
+		if (reader.state())
 		{
 			std::vector<char> rData{};
 			rData.resize(wData.size());

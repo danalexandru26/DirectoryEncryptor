@@ -22,8 +22,7 @@ public:
 	std::string readString(std::size_t count);
 
 	void swap(FileReader& lhs, FileReader& rhs);
-	int status();
-	std::ios_base::iostate state();
+	int state();
 
 
 private:
