@@ -46,3 +46,5 @@
 [2026-06-02 12:23:06.6503831] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\ZenTimings_v1.39\ZenTimings_v1.39\ZenTimings.exe
 [2026-06-02 12:30:26.8773617] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\AXI_Test.veo
 [2026-06-02 12:30:27.4256883] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\AXI_Test.veo
+[2026-06-02 15:04:07.3839440] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\e.txt
+[2026-06-02 15:04:16.9722652] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\e.txt

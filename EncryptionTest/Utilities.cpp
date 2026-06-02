@@ -1,8 +1,8 @@
 #include"Utilities.hpp"
 
-void encryptionApplicationTest()
+void encryptionApplicationTest(const char* encryptionKey, const std::string& cipher)
 {
-	DirectoryEncryptor fcrypt(cryptoKey, blockCipher);
+	DirectoryEncryptor fcrypt(encryptionKey, cipher);
 	int command{-1};
 
 	while (command)

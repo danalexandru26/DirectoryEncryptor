@@ -12,8 +12,6 @@
 #include "CloudflareR2.hpp"
 
 inline static const std::string path{"D:\\Crypto\\SampleFiles"};
-inline static const std::string cryptoKey{"2B7E151628AED2A6ABF7158809CF4F3C"};
-inline static const std::string blockCipher{"AES-128/CBC/PKCS7"};
 
 template <typename T>
 std::vector<T> fillVector(T value, std::size_t size)
@@ -41,7 +39,7 @@ bool compare(const T& left, const T& right)
 	return false;
 }
 
-void encryptionApplicationTest();
+void encryptionApplicationTest(const char* encryptionKey, const std::string& cipher);
 void loggingApplicationTest();
 void fileStreamApplicationTest();
 
