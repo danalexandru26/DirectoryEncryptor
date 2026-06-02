@@ -27,7 +27,7 @@ FileStreamReader& FileStreamReader::operator=(FileStreamReader other)
 void FileStreamReader::swap(FileStreamReader& lhs, FileStreamReader& rhs)
 {
 	std::swap(lhs.mPath, rhs.mPath);
-	mFile.swap(rhs.mFile);
+	lhs.mFile.swap(rhs.mFile);
 }
 
 std::vector<char> FileStreamReader::readAll(std::streamsize limit)

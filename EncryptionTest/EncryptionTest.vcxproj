@@ -145,6 +145,7 @@
     <ClCompile Include="CloudflareR2.cpp" />
     <ClCompile Include="Crypto.cpp" />
     <ClCompile Include="FileStreamReader.cpp" />
+    <ClCompile Include="FileStreamWriter.cpp" />
     <ClCompile Include="HeaderContainer.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
