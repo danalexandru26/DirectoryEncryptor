@@ -23,11 +23,9 @@ public:
 
 	void swap(FileStreamReader& lhs, FileStreamReader& rhs);
 	int state();
-
+	std::streamsize gcount();
 
 private:
-	void moveResources(FileStreamReader& other);
-
 	std::filesystem::path mPath;
 	std::fstream mFile;
 };

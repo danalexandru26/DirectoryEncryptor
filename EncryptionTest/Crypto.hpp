@@ -2,6 +2,7 @@
 #include<botan/auto_rng.h>
 #include<botan/cipher_mode.h>
 #include<botan/block_cipher.h>
+#include<botan/hash.h>
 #include<botan/hex.h>
 #include<botan/rng.h>
 #include<iostream>
@@ -19,7 +20,7 @@
 
 constexpr uint32_t _CHUNK_ = 65536;
 constexpr uint16_t _IVLEN_ = 16;
-constexpr auto _TMPEXT_ = ".encr";
+constexpr auto _ENCODED = ".encaes";
 
 class DirectoryEncryptor
 {
@@ -38,13 +39,14 @@ public:
 	void excludeExtension(const std::vector<std::string>& extensions);
 	void initializeLog(const std::filesystem::path& path);
 	void initializeMetadata(const std::filesystem::path& path);
+	void SHA256(const std::filesystem::path& path, const std::string& mode);
 
 private:
 	void encryptDirectory(const std::filesystem::path& path);
 	void decryptDirectory(const std::filesystem::path& path);
-	bool encryptFile(const std::filesystem::path& fPath);
-	bool decryptFile(const std::filesystem::path& fPath);
-	bool verifyExclusion(const std::filesystem::path& fPath);
+	bool encryptFile(const std::filesystem::path& path);
+	bool decryptFile(const std::filesystem::path& path);
+	bool verifyExclusion(const std::filesystem::path& path);
 
 	Botan::secure_vector<uint8_t> cryptoKey{};
 	std::unique_ptr<Botan::Cipher_Mode> enc{};

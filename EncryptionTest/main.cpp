@@ -6,6 +6,7 @@
 
 int main()
 {
+	cryptoExec();
 
 	return EXIT_SUCCESS;
 }

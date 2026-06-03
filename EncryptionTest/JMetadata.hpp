@@ -32,6 +32,7 @@ public:
 	JMetadata& operator=(JMetadata&& other) noexcept;
 
 	void record(const std::filesystem::path& path, const JSONKeys& key);
+	void record(const std::filesystem::path& path, const std::string& key, const std::string& value);
 	void record(const std::filesystem::path& path, const std::vector<JSONKeys>& keys);
 	bool saveJM();
 

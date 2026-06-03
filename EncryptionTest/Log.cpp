@@ -36,26 +36,34 @@ Log& Log::operator=(Log&& other) noexcept
 	return *this;
 }
 
-bool Log::logMessage(const std::string& scope, const std::string& message, uint8_t level,
+
+void Log::logMessage(const std::string& scope, const std::string& message, uint8_t level,
                      const std::source_location& location)
 {
 	std::chrono::system_clock::time_point systemClock = std::chrono::system_clock::now();
-	std::string logMessage = std::format("[{}] [{}] Scope[{}] Severity[{}]: {}\n", systemClock,
-	                                     location.function_name(), scope, level,
-	                                     message);
+	std::string log = std::format("[{}] [{}] Scope[{}] Severity[{}]: {}\n", systemClock,
+	                              location.function_name(), scope, level,
+	                              message);
 
 	if (level >= 2)
 	{
-		return directTransfer(logMessage);
+		directTransfer(log);
 	}
 
-	logCache.push_back(logMessage);
+	logCache.push_back(log);
 	if (logCache.size() >= _LOG_ENTRY_MAX_)
 	{
-		return cacheTransfer();
+		cacheTransfer();
 	}
+}
 
-	return true;
+void Log::logMessage(std::ostream& os, const std::string& scope, const std::string& message, uint8_t level,
+                     const std::source_location& location)
+{
+	std::string log = std::format("[{}] Scope[{}] Severity[{}]: {}",
+	                              location.function_name(), scope, level,
+	                              message);
+	os << log << '\n';
 }
 
 bool Log::cacheTransfer()

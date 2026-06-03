@@ -46,6 +46,11 @@ void JMetadata::record(const std::filesystem::path& path, const JSONKeys& key)
 	}
 }
 
+void JMetadata::record(const std::filesystem::path& path, const std::string& key, const std::string& value)
+{
+	data[path.generic_string()][key] = value;
+}
+
 bool JMetadata::saveJM()
 {
 	std::ofstream file(manifest);

@@ -75,16 +75,12 @@ std::string FileStreamReader::readString(std::size_t count)
 	return string;
 }
 
-void FileStreamReader::moveResources(FileStreamReader& other)
-{
-	if (this != &other)
-	{
-		mPath = std::move(other.mPath);
-		mFile = std::move(other.mFile);
-	}
-}
-
 int FileStreamReader::state()
 {
 	return mFile.is_open();
+}
+
+std::streamsize FileStreamReader::gcount()
+{
+	return mFile.gcount();
 }

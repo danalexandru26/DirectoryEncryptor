@@ -34,8 +34,10 @@ public:
 	Log& operator=(const Log& other) = delete;
 	Log& operator=(Log&& other) noexcept;
 
-	bool logMessage(const std::string& scope, const std::string& message, uint8_t level,
+	void logMessage(const std::string& scope, const std::string& message, uint8_t level,
 	                const std::source_location& location = std::source_location::current());
+	void logMessage(std::ostream& os, const std::string& scope, const std::string& message, uint8_t level,
+		const std::source_location& location = std::source_location::current());
 	bool moveLog(const std::filesystem::path& path);
 	bool isActive();
 

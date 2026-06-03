@@ -69,31 +69,32 @@ void DirectoryEncryptor::decryptDirectory(const std::filesystem::path& path)
 	}
 }
 
-bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
+bool DirectoryEncryptor::decryptFile(const std::filesystem::path& path)
 {
-	if (verifyExclusion(fPath))
+	if (verifyExclusion(path))
 	{
-		LOG_.logMessage("Decryption-Exclusion List", fPath.string(), 0);
+		LOG_.logMessage("Decryption-Exclusion List", path.string(), 0);
 		return false;
 	}
 
-	std::fstream file(fPath, std::ios::binary | std::ios::in);
+	std::fstream file(path, std::ios::binary | std::ios::in);
 	if (!file)
 	{
-		LOG_.logMessage("Decryption-Invalid File", fPath.string(), 1);
+		LOG_.logMessage("Decryption-Invalid File", path.string(), 1);
 		return false;
 	}
 
-	std::filesystem::path dummyPath{fPath};
-	dummyPath.replace_extension(_TMPEXT_);
+	std::filesystem::path dummyPath{path};
+	dummyPath.replace_extension(_ENCODED);
 
 	std::ofstream dummyFile(dummyPath, std::ios::out | std::ios::binary);
 	if (!file)
 	{
-		LOG_.logMessage("Decryption", fPath.string(), 2);
+		LOG_.logMessage("Decryption", path.string(), 2);
 		return false;
 	}
-	LOG_.logMessage("Decryption", fPath.string(), 0);
+	LOG_.logMessage("Decryption", path.string(), 0);
+	LOG_.logMessage(std::cout, "Decryption", path.string(), 0);
 
 	std::vector<char> buffer(_CHUNK_);
 	std::vector<uint8_t> iv(_IVLEN_);
@@ -117,43 +118,45 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& fPath)
 		}
 		catch (std::exception& e)
 		{
-			LOG_.logMessage("Decryption", fPath.string(), 3);
+			LOG_.logMessage("Decryption", path.string(), 3);
 		}
 	}
 
 	file.close();
 	dummyFile.close();
 
-	std::filesystem::remove(fPath);
-	std::filesystem::rename(dummyPath, fPath);
+	std::filesystem::remove(path);
+	std::filesystem::rename(dummyPath, path);
 
 	return true;
 }
 
-bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
+bool DirectoryEncryptor::encryptFile(const std::filesystem::path& path)
 {
-	if (verifyExclusion(fPath))
+	if (verifyExclusion(path))
 	{
-		std::cerr << "File extension is in the exclusion list. Path: " << fPath << '\n';
+		std::cerr << "File extension is in the exclusion list. Path: " << path << '\n';
 		return false;
 	}
 
-	std::fstream file(fPath, std::ios::in | std::ios::binary);
+	SHA256(path, "SHA-256-DEC");
+	std::fstream file(path, std::ios::in | std::ios::binary);
 	if (!file)
 	{
-		std::cerr << "Invalid Path: " << fPath << '\n';
+		std::cerr << "Invalid Path: " << path << '\n';
 		return false;
 	}
-	std::filesystem::path dummyPath{fPath};
-	dummyPath.replace_extension(_TMPEXT_);
+	std::filesystem::path dummyPath{path};
+	dummyPath.replace_extension(_ENCODED);
 	std::ofstream dummyFile(dummyPath, std::ios::out | std::ios::binary);
 
 	if (!dummyFile)
 	{
-		std::cerr << "Temporary file cannot be created. Encryption failed for: " << fPath << '\n';
+		std::cerr << "Temporary file cannot be created. Encryption failed for: " << path << '\n';
 		return false;
 	}
-	std::cerr << "Currently Encrypting: " << fPath << '\n';
+	LOG_.logMessage("Decryption", path.string(), 0);
+	LOG_.logMessage(std::cout, "Decryption", path.string(), 0);
 
 	Botan::AutoSeeded_RNG rng;
 	const auto iv = rng.random_vec<std::vector<uint8_t>>(enc->default_nonce_length());
@@ -182,18 +185,42 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& fPath)
 		}
 		catch (std::exception& e)
 		{
-			LOG_.logMessage("Encryption", fPath.string(), 3);
+			LOG_.logMessage("Encryption", path.string(), 3);
 		}
 	}
 
 	file.close();
 	dummyFile.close();
 
-	std::filesystem::remove(fPath);
-	std::filesystem::rename(dummyPath, fPath);
-	METADATA_.record(fPath, {JSONKeys::Timestamp, JSONKeys::Filesize});
+	std::filesystem::remove(path);
+	std::filesystem::rename(dummyPath, path);
+
+	METADATA_.record(path, {JSONKeys::Timestamp, JSONKeys::Filesize});
+	SHA256(path, "SHA-256-ENC");
 	//uploadToCloudflareR2(fPath.generic_string(), fPath.generic_string());
 	return true;
+}
+
+void DirectoryEncryptor::SHA256(const std::filesystem::path& path, const std::string& mode)
+{
+	const auto sha256 = Botan::HashFunction::create_or_throw("SHA-256");
+	std::ifstream file(path);
+
+	if (!file.is_open())
+	{
+		LOG_.logMessage("SHA-256", "Hash/Checksum could not be computed", 1);
+		LOG_.logMessage(std::cout, "SHA - 256", "Hash / Checksum could not be computed", 1);
+	}
+	std::vector<uint8_t> buffer(_CHUNK_);
+
+	while (file.read(reinterpret_cast<char*>(buffer.data()), _CHUNK_) || file.gcount() > 0)
+	{
+		sha256->update(std::span{buffer}.first(file.gcount()));
+	}
+
+	std::string hash = Botan::hex_encode(sha256->final());
+	METADATA_.record(path, mode, hash);
+	file.close();
 }
 
 void DirectoryEncryptor::excludeExtension(const std::string& extension)
@@ -209,11 +236,11 @@ void DirectoryEncryptor::excludeExtension(const std::vector<std::string>& extens
 	}
 }
 
-bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& fPath)
+bool DirectoryEncryptor::verifyExclusion(const std::filesystem::path& path)
 {
 	for (auto& e : exclusions)
 	{
-		if (fPath.extension() == e)
+		if (path.extension() == e)
 		{
 			return true;
 		}
