@@ -307,3 +307,5 @@
 [2026-06-03 10:57:13.4599586] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\nvidiaProfileInspector.exe
 [2026-06-03 10:57:52.6794706] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\nvidiaProfileInspector.exe
 [2026-06-03 10:57:52.6809087] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[3]: D:\Crypto\SampleFiles\nvidiaProfileInspector.exe
+[2026-06-03 11:07:13.5408499] [bool __cdecl DirectoryEncryptor::encryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\nvidiaProfileInspector.exe
+[2026-06-03 11:07:33.4001993] [bool __cdecl DirectoryEncryptor::decryptFile(const class std::filesystem::path &)] Scope[Decryption] Severity[0]: D:\Crypto\SampleFiles\nvidiaProfileInspector.exe

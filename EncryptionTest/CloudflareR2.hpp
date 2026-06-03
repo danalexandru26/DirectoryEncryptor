@@ -11,7 +11,7 @@ public:
 	CloudFlareR2(const std::string& keyId, const std::string& accessKey);
 
 	int interrogate();
-	void upload(const std::string& path, std::string& cloudflareObject);
+	void upload(const std::string& path, std::string cloudflareObject);
 
 private:
 	void processString(std::string& path);

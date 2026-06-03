@@ -213,7 +213,8 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& path)
 	METADATA_.record(path, "SHA-256-ENC", encodedHash);
 
 
-	//uploadToCloudflareR2(fPath.generic_string(), fPath.generic_string());
+	CloudFlareR2 uploadHandler;
+	uploadHandler.upload(path.generic_string(), path.generic_string());
 	return true;
 }
 

@@ -6,7 +6,7 @@ CloudFlareR2::CloudFlareR2(const std::string& keyId, const std::string& accessKe
 }
 
 
-void CloudFlareR2::upload(const std::string& path, std::string& cloudflareObject)
+void CloudFlareR2::upload(const std::string& path, std::string cloudflareObject)
 {
 	std::string keyId{"d05950f1bfa47d7fc451886876f93f6d"};
 	std::string secretKey{"28054c6b3939fee39f7331f4f7a9d2009919eee0f8da25b4bbc128e2faef87c3"};
