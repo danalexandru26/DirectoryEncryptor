@@ -53,5 +53,7 @@ bool readChunk(const std::filesystem::path& path);
 bool readAllChunks(const std::filesystem::path& path);
 void cleanup(const std::filesystem::path& path);
 
-bool writeRaw(const std::filesystem::path& path);
-bool writeArray(const std::filesystem::path& path);
+void writeRaw(const std::filesystem::path& path);
+void writeArray(const std::filesystem::path& path);
+
+void rwWhole(const std::filesystem::path& source, const std::filesystem::path& destination);

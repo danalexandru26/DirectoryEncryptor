@@ -6,7 +6,6 @@
 
 int main()
 {
-	writeRaw("Tests\\Write\\writeRaw.txt");
 
 	return EXIT_SUCCESS;
 }

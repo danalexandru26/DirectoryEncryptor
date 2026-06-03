@@ -185,7 +185,7 @@ bool readAllChunks(const std::filesystem::path& path)
 	return true;
 }
 
-bool writeRaw(const std::filesystem::path& path)
+void writeRaw(const std::filesystem::path& path)
 {
 	FileStreamWriter fsWriter(path);
 
@@ -193,6 +193,32 @@ bool writeRaw(const std::filesystem::path& path)
 
 	fsWriter.writeData(&payload, sizeof(payload));
 }
+
+
+void writeArray(const std::filesystem::path& path)
+{
+	FileStreamWriter fsWriter(path);
+	std::vector<uint8_t> vector{1, 2, 3, 4, 5};
+
+	fsWriter.writeArray(vector);
+}
+
+void rwWhole(const std::filesystem::path& source, const std::filesystem::path& destination)
+{
+	FileStreamReader reader(source);
+	FileStreamWriter writer(destination);
+
+	try
+	{
+		std::vector<char> buffer = reader.readAll();
+		writer.writeData(buffer.data(), buffer.size());
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+}
+
 
 void cleanup(const std::filesystem::path& path)
 {

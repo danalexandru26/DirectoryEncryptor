@@ -2,7 +2,7 @@
 
 FileStreamReader::FileStreamReader(const std::filesystem::path& path) : mPath{path}
 {
-	mFile.open(path);
+	mFile.open(path, std::ios::in | std::ios::binary);
 }
 
 FileStreamReader::FileStreamReader(FileStreamReader&& other) noexcept : FileStreamReader()

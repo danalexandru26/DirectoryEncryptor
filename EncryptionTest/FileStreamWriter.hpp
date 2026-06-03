@@ -26,13 +26,13 @@ public:
 	}
 
 	template <typename T>
-	void writeArray(const std::vector<T>& vector)
+	void writeArray(std::vector<T>& vector)
 	{
 		for (auto& v : vector)
 		{
 			if constexpr (std::is_trivial<T>())
 			{
-				writeData(v, sizeof(T));
+				writeData(reinterpret_cast<const char*>(&v), sizeof(T));
 			}
 			else
 			{
