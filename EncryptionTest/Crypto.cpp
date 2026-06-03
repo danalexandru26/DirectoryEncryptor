@@ -30,6 +30,7 @@ void DirectoryEncryptor::encrypt(const std::filesystem::path& path)
 
 void DirectoryEncryptor::decrypt(const std::filesystem::path& path)
 {
+	METADATA_.extractJM();
 	this->decryptDirectory(path);
 }
 
@@ -93,6 +94,17 @@ bool DirectoryEncryptor::decryptFile(const std::filesystem::path& path)
 		LOG_.logMessage("Decryption", path.string(), 2);
 		return false;
 	}
+	std::string encodedHash = SHA256(path);
+	if (METADATA_.check(path, "SHA-256-ENC", encodedHash))
+	{
+		LOG_.logMessage(std::cout, "Checksum", "File is not tampered", 0);
+	}
+	else
+	{
+		LOG_.logMessage(std::cout, "Checksum", "File is tampered", 0);
+		return false;
+	}
+
 	LOG_.logMessage("Decryption", path.string(), 0);
 	LOG_.logMessage(std::cout, "Decryption", path.string(), 0);
 
@@ -135,11 +147,12 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& path)
 {
 	if (verifyExclusion(path))
 	{
-		std::cerr << "File extension is in the exclusion list. Path: " << path << '\n';
 		return false;
 	}
 
-	SHA256(path, "SHA-256-DEC");
+	std::string decodedHash = SHA256(path);
+	METADATA_.record(path, "SHA-256-DEC", decodedHash);
+
 	std::fstream file(path, std::ios::in | std::ios::binary);
 	if (!file)
 	{
@@ -196,12 +209,15 @@ bool DirectoryEncryptor::encryptFile(const std::filesystem::path& path)
 	std::filesystem::rename(dummyPath, path);
 
 	METADATA_.record(path, {JSONKeys::Timestamp, JSONKeys::Filesize});
-	SHA256(path, "SHA-256-ENC");
+	std::string encodedHash = SHA256(path);
+	METADATA_.record(path, "SHA-256-ENC", encodedHash);
+
+
 	//uploadToCloudflareR2(fPath.generic_string(), fPath.generic_string());
 	return true;
 }
 
-void DirectoryEncryptor::SHA256(const std::filesystem::path& path, const std::string& mode)
+std::string DirectoryEncryptor::SHA256(const std::filesystem::path& path)
 {
 	const auto sha256 = Botan::HashFunction::create_or_throw("SHA-256");
 	std::ifstream file(path);
@@ -219,7 +235,7 @@ void DirectoryEncryptor::SHA256(const std::filesystem::path& path, const std::st
 	}
 
 	std::string hash = Botan::hex_encode(sha256->final());
-	METADATA_.record(path, mode, hash);
+	return hash;
 	file.close();
 }
 

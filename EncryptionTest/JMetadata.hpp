@@ -34,7 +34,11 @@ public:
 	void record(const std::filesystem::path& path, const JSONKeys& key);
 	void record(const std::filesystem::path& path, const std::string& key, const std::string& value);
 	void record(const std::filesystem::path& path, const std::vector<JSONKeys>& keys);
-	bool saveJM();
+
+	bool check(const std::filesystem::path& path, const std::string& key, const std::string& value);
+
+	void saveJM();
+	void extractJM();
 
 private:
 	std::time_t computeTimestamp(const std::filesystem::path& path);

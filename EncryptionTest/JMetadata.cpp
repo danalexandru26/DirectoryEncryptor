@@ -21,14 +21,6 @@ JMetadata& JMetadata::operator=(JMetadata&& other) noexcept
 	return *this;
 }
 
-void JMetadata::record(const std::filesystem::path& path, const std::vector<JSONKeys>& keys)
-{
-	for (JSONKeys key : keys)
-	{
-		this->record(path, key);
-	}
-}
-
 void JMetadata::record(const std::filesystem::path& path, const JSONKeys& key)
 {
 	switch (key)
@@ -51,20 +43,53 @@ void JMetadata::record(const std::filesystem::path& path, const std::string& key
 	data[path.generic_string()][key] = value;
 }
 
-bool JMetadata::saveJM()
+void JMetadata::record(const std::filesystem::path& path, const std::vector<JSONKeys>& keys)
+{
+	for (JSONKeys key : keys)
+	{
+		this->record(path, key);
+	}
+}
+
+bool JMetadata::check(const std::filesystem::path& path, const std::string& key, const std::string& value)
+{
+	if (data.contains(path.generic_string()))
+	{
+		for (auto& [entry, val] : data[path.generic_string()].items())
+		{
+			if (entry == key)return val == value;
+		}
+	}
+	return false;
+}
+
+void JMetadata::saveJM()
 {
 	std::ofstream file(manifest);
 
 	if (!file.is_open())
 	{
 		std::cerr << "Manifest file cannot be opened or created\n";
-		return false;
 	}
 	file << std::setw(4) << data << '\n';
 
 	file.close();
-	return true;
 }
+
+void JMetadata::extractJM()
+{
+	std::ifstream file(manifest);
+
+	try
+	{
+		data = nlohmann::json::parse(file);
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+}
+
 
 std::time_t JMetadata::computeTimestamp(const std::filesystem::path& path)
 {

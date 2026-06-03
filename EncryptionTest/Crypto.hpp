@@ -39,7 +39,7 @@ public:
 	void excludeExtension(const std::vector<std::string>& extensions);
 	void initializeLog(const std::filesystem::path& path);
 	void initializeMetadata(const std::filesystem::path& path);
-	void SHA256(const std::filesystem::path& path, const std::string& mode);
+	std::string SHA256(const std::filesystem::path& path);
 
 private:
 	void encryptDirectory(const std::filesystem::path& path);
