@@ -55,7 +55,7 @@ void loggingApplicationTest()
 	}
 }
 
-bool ReadRaw(const std::filesystem::path& path)
+bool readRaw(const std::filesystem::path& path)
 {
 	std::fstream wStream{};
 
@@ -80,11 +80,11 @@ bool ReadRaw(const std::filesystem::path& path)
 			compare(wData, rData);
 		}
 	}
-	Test_cleanup(path);
+	cleanup(path);
 	return true;
 }
 
-bool ReadArray(const std::filesystem::path& path)
+bool readArray(const std::filesystem::path& path)
 {
 	std::fstream wStream{};
 
@@ -111,11 +111,11 @@ bool ReadArray(const std::filesystem::path& path)
 			compare(wData, rData);
 		}
 	}
-	Test_cleanup(path);
+	cleanup(path);
 	return true;
 }
 
-bool ReadAll(const std::filesystem::path& path)
+bool readAll(const std::filesystem::path& path)
 {
 	FileStreamReader reader(path);
 
@@ -132,7 +132,7 @@ bool ReadAll(const std::filesystem::path& path)
 	return true;
 }
 
-bool ReadChunk(const std::filesystem::path& path)
+bool readChunk(const std::filesystem::path& path)
 {
 	constexpr uint16_t _chunk = 4096;
 
@@ -145,7 +145,7 @@ bool ReadChunk(const std::filesystem::path& path)
 	return true;
 }
 
-bool ReadAllChunks(const std::filesystem::path& path)
+bool readAllChunks(const std::filesystem::path& path)
 {
 	constexpr uint16_t _chunk = 2;
 	std::vector<char> buffer(_chunk);
@@ -167,7 +167,13 @@ bool ReadAllChunks(const std::filesystem::path& path)
 	return true;
 }
 
-void Test_cleanup(const std::filesystem::path& path)
+bool writeRaw(const std::filesystem::path& path)
+{
+	FileStreamWriter fsWriter(path);
+}
+
+
+void cleanup(const std::filesystem::path& path)
 {
 	std::filesystem::remove(path);
 }

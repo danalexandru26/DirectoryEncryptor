@@ -9,6 +9,7 @@
 #include"HeaderContainer.hpp"
 #include"Crypto.hpp"
 #include"FileStreamReader.hpp"
+#include"FileStreamWriter.hpp"
 #include "CloudflareR2.hpp"
 
 inline static const std::string path{"D:\\Crypto\\SampleFiles"};
@@ -44,9 +45,12 @@ void loggingApplicationTest();
 void fileStreamApplicationTest();
 
 
-bool ReadRaw(const std::filesystem::path& path);
-bool ReadArray(const std::filesystem::path& path);
-bool ReadAll(const std::filesystem::path& path);
-bool ReadChunk(const std::filesystem::path& path);
-bool ReadAllChunks(const std::filesystem::path& path);
-void Test_cleanup(const std::filesystem::path& path);
+bool readRaw(const std::filesystem::path& path);
+bool readArray(const std::filesystem::path& path);
+bool readAll(const std::filesystem::path& path);
+bool readChunk(const std::filesystem::path& path);
+bool readAllChunks(const std::filesystem::path& path);
+void cleanup(const std::filesystem::path& path);
+
+bool writeRaw(const std::filesystem::path& path);
+bool writeArray(const std::filesystem::path& path);

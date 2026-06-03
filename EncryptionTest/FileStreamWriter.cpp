@@ -26,16 +26,13 @@ FileStreamWriter& FileStreamWriter::operator=(FileStreamWriter other)
 
 void FileStreamWriter::writeData(const char* data, std::size_t size)
 {
-	if (mFile.is_open())
-	{
-		mFile.write(data, size);
-	}
-	else
-	{
-		// TODO(?) Supplementary handling if descriptor failed to initialize
-	}
+	mFile.write(data, size);
 }
 
+void FileStreamWriter::writeString(const std::string& string, std::size_t size)
+{
+	mFile.write(string.data(), size);
+}
 
 void swap(FileStreamWriter& lhs, FileStreamWriter& rhs) noexcept
 {
