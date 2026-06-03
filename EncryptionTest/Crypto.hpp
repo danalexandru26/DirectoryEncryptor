@@ -14,6 +14,8 @@
 #include"Log.hpp"
 #include"JMetadata.hpp"
 #include"CloudflareR2.hpp"
+#include"FileStreamWriter.hpp"
+#include"FileStreamReader.hpp"
 
 constexpr uint32_t _CHUNK_ = 65536;
 constexpr uint16_t _IVLEN_ = 16;
