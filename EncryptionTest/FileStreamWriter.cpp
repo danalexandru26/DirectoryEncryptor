@@ -2,7 +2,7 @@
 
 FileStreamWriter::FileStreamWriter(const std::filesystem::path& path) : mPath{path}
 {
-	mFile.open(mPath);
+	mFile.open(mPath, std::ios::out | std::ios::binary);
 }
 
 FileStreamWriter::FileStreamWriter(FileStreamWriter&& other) noexcept : FileStreamWriter()

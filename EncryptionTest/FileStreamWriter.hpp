@@ -44,7 +44,6 @@ public:
 	void writeString(const std::string& string, std::size_t size);
 	void writeData(const char* data, std::size_t size);
 
-
 	friend void swap(FileStreamWriter& lhs, FileStreamWriter& rhs) noexcept;
 
 private:

@@ -6,18 +6,7 @@
 
 int main()
 {
-	const std::string envEncryption("AES128_ENCRYPTION_KEY");
-	const std::string blockCipher{"AES-128/CBC/PKCS7"};
+	writeRaw("Tests\\Write\\writeRaw.txt");
 
-	const char* encryptionKey = readEnvironmentVariable(envEncryption);
-
-	if (encryptionKey == nullptr)
-	{
-		std::cerr << "Encryption key environment variable is invalid\n";
-		return 1;
-	}
-	encryptionApplicationTest(encryptionKey, blockCipher);
-
-	delete[] encryptionKey;
-	return 0;
+	return EXIT_SUCCESS;
 }

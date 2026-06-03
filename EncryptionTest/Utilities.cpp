@@ -1,6 +1,24 @@
 #include"Utilities.hpp"
+#include"SystemUtilities.hpp"
 
-void encryptionApplicationTest(const char* encryptionKey, const std::string& cipher)
+int cryptoExec()
+{
+	const std::string envEncryption("AES128_ENCRYPTION_KEY");
+	const std::string blockCipher{"AES-128/CBC/PKCS7"};
+
+	const char* encryptionKey = readEnvironmentVariable(envEncryption);
+
+	if (encryptionKey == nullptr)
+	{
+		std::cerr << "Encryption key environment variable is invalid\n";
+		return 1;
+	}
+	encryptionCLI(encryptionKey, blockCipher);
+
+	delete[] encryptionKey;
+}
+
+void encryptionCLI(const char* encryptionKey, const std::string& cipher)
 {
 	DirectoryEncryptor fcrypt(encryptionKey, cipher);
 	int command{-1};
@@ -170,8 +188,11 @@ bool readAllChunks(const std::filesystem::path& path)
 bool writeRaw(const std::filesystem::path& path)
 {
 	FileStreamWriter fsWriter(path);
-}
 
+	char payload{'a'};
+
+	fsWriter.writeData(&payload, sizeof(payload));
+}
 
 void cleanup(const std::filesystem::path& path)
 {

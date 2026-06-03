@@ -40,7 +40,8 @@ bool compare(const T& left, const T& right)
 	return false;
 }
 
-void encryptionApplicationTest(const char* encryptionKey, const std::string& cipher);
+int cryptoExec();
+void encryptionCLI(const char* encryptionKey, const std::string& cipher);
 void loggingApplicationTest();
 void fileStreamApplicationTest();
 
