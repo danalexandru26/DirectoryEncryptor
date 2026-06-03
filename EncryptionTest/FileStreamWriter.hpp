@@ -14,8 +14,38 @@ public:
 	~FileStreamWriter();
 
 	FileStreamWriter& operator=(FileStreamWriter other);
+	FileStreamWriter& operator=(const FileStreamWriter& other) = delete;
+
+	template <typename T>
+	void writeRaw(const T& type)
+	{
+		if constexpr (std::is_trivial<T>())
+		{
+			writeData(reinterpret_cast<const char*>(&type), sizeof(T));
+		}
+	}
+
+	template <typename T>
+	void writeArray(const std::vector<T>& vector)
+	{
+		for (auto& v : vector)
+		{
+			if constexpr (std::is_trivial<T>())
+			{
+				writeData(v, sizeof(T));
+			}
+			else
+			{
+				// TODO Object serialization or architectural changes to allow writing of raw user defined types
+			}
+		}
+	}
+
+	void writeData(const char* data, std::size_t size);
+
 
 	friend void swap(FileStreamWriter& lhs, FileStreamWriter& rhs) noexcept;
+
 private:
 	std::filesystem::path mPath;
 	std::ofstream mFile;
